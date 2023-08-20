@@ -36,6 +36,7 @@ class AuthPage extends StatelessWidget {
                       ); // Pass UID here
                     } else {
                       return HomePage(
+                        uid: user.uid,
                         username: '',
                       ); // Pass UID here
                     }

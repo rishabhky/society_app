@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const AuthPage(),
         MyRoutes.homeRoute: (context) => HomePage(
+              uid: ModalRoute.of(context)!.settings.arguments as String,
               username: '',
             ),
         MyRoutes.loginRoute: (context) => LoginPage(),

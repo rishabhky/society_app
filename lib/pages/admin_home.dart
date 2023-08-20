@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/utils/routes.dart';
 
 class AdminHome extends StatefulWidget {
@@ -15,53 +14,57 @@ class AdminHome extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<AdminHome> createState() => _AdminHomeState();
+  _AdminHomeState createState() => _AdminHomeState();
 }
 
 class _AdminHomeState extends State<AdminHome> {
   int flatNumber = 0;
-  Razorpay? _razorpay;
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Fluttertoast.showToast(
-        msg: "Payment Success : ${response.paymentId}", timeInSecForIosWeb: 4);
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(
-        msg: "Payment Failed : ${response.code} - ${response.message}",
-        timeInSecForIosWeb: 4);
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    Fluttertoast.showToast(
-        msg: "External wallet is : ${response.walletName}",
-        timeInSecForIosWeb: 4);
-  }
-
-  var amountController = TextEditingController();
+  late Razorpay _razorpay;
+  final TextEditingController amountController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     fetchUserData();
     _razorpay = Razorpay();
-    _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay?.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  void makepayment() async {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+      msg: "Payment Success : ${response.paymentId}",
+      timeInSecForIosWeb: 4,
+    );
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+      msg: "Payment Failed : ${response.code} - ${response.message}",
+      timeInSecForIosWeb: 4,
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+      msg: "External wallet is : ${response.walletName}",
+      timeInSecForIosWeb: 4,
+    );
+  }
+
+  void makePayment(BuildContext context) async {
+    double amount = double.tryParse(amountController.text) ?? 0.0;
     var options = {
       'key': 'rzp_test_ugZrbmLHkEGjBy',
-      'amount': (int.parse(amountController.text) * 100)
-          .toString(), //in the smallest currency sub-unit.
+      'amount': (amount * 100).toInt().toString(),
       'name': 'V.M Grandeur',
-      'order_id': 'order_EMBFqjDHEEn80l', // Generate order_id using Orders API
-      'timeout': 300, // in seconds
+      'order_id': 'order_EMBFqjDHEEn80l',
+      'timeout': 300,
       'prefill': {'contact': '', 'email': ''}
     };
     try {
-      _razorpay?.open(options);
+      _razorpay.open(options);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -93,10 +96,10 @@ class _AdminHomeState extends State<AdminHome> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-            icon: const Icon(Icons.login),
+            icon: Icon(Icons.login),
             color: Colors.white,
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
@@ -105,7 +108,7 @@ class _AdminHomeState extends State<AdminHome> {
           ),
         ],
         backgroundColor: Colors.black,
-        title: const Center(
+        title: Center(
           child: Text(
             "Admin",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -144,19 +147,15 @@ class _AdminHomeState extends State<AdminHome> {
               ),
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Colors.white, width: 2), // Border color and width
-                  borderRadius:
-                      BorderRadius.circular(10), // Adjust the radius as needed
+                  border: Border.all(color: Colors.white, width: 2),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.transparent, // Transparent background color
-                    borderRadius: BorderRadius.circular(
-                        10), // Same radius as the outer container
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.all(
-                      10), // Optional: Add padding inside the inner container
+                  padding: EdgeInsets.all(10),
                   child: Column(
                     children: [
                       Text(
@@ -180,59 +179,81 @@ class _AdminHomeState extends State<AdminHome> {
                 height: 20,
               ),
               ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shadowColor: Colors.white,
-                    elevation: 8,
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Payment',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          content: TextFormField(
-                            controller: amountController,
-                            decoration: const InputDecoration(
-                                hintText: "Enter Maintenance Amount:",
-                                labelText: "Amount "),
-                            keyboardType: TextInputType.number,
-                          ),
-                          actions: [
-                            Center(
-                              child: TextButton(
-                                onPressed: () {
-                                  makepayment(); // Close the dialog
-                                },
-                                child: Text('Pay'),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: const Icon(Icons.payment),
-                  label: const Text(
-                    "Payment",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
-                  )),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shadowColor: Colors.white,
+                  elevation: 8,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return PaymentDialog(
+                        razorpay: _razorpay,
+                        makePaymentCallback: makePayment,
+                      );
+                    },
+                  );
+                },
+                icon: Icon(Icons.payment),
+                label: Text(
+                  "Payment",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
               const SizedBox(
                 height: 20,
-              )
+              ),
             ],
           ),
         ),
       ),
       drawer: MyDrawer(username: widget.username),
+    );
+  }
+}
+
+class PaymentDialog extends StatelessWidget {
+  final Razorpay razorpay;
+  final Function(BuildContext) makePaymentCallback;
+
+  PaymentDialog({
+    required this.razorpay,
+    required this.makePaymentCallback,
+  });
+
+  final TextEditingController amountController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        'Payment',
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      content: TextFormField(
+        controller: amountController,
+        decoration: InputDecoration(
+            hintText: "Enter Maintenance Amount:", labelText: "Amount "),
+        keyboardType: TextInputType.number,
+      ),
+      actions: [
+        Center(
+          child: TextButton(
+            onPressed: () {
+              makePaymentCallback(context);
+            },
+            child: Text('Pay'),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -249,17 +270,17 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(color: Colors.black),
+            decoration: BoxDecoration(color: Colors.black),
             child: Column(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 39,
                   backgroundImage: AssetImage('assets/images/profile.png'),
                 ),
                 Text(
                   "Hello Admin $username!",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -272,4 +293,10 @@ class MyDrawer extends StatelessWidget {
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: AdminHome(username: "Admin", uid: "admin_uid"),
+  ));
 }
