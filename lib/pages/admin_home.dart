@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
+
+import 'Admin_notice.dart';
 
 class AdminHome extends StatefulWidget {
   final String username;
@@ -14,13 +17,15 @@ class AdminHome extends StatefulWidget {
       : super(key: key);
 
   @override
-  _AdminHomeState createState() => _AdminHomeState();
+  State<AdminHome> createState() => _AdminHomeState();
 }
 
 class _AdminHomeState extends State<AdminHome> {
+  String isAdmin = "";
   int flatNumber = 0;
-  late Razorpay _razorpay;
-  final TextEditingController amountController = TextEditingController();
+  double predefinedAmount = 100.0; // Replace with your predefined amount
+  Razorpay _razorpay = Razorpay();
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -53,23 +58,6 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
-  void makePayment(BuildContext context) async {
-    double amount = double.tryParse(amountController.text) ?? 0.0;
-    var options = {
-      'key': 'rzp_test_ugZrbmLHkEGjBy',
-      'amount': (amount * 100).toInt().toString(),
-      'name': 'V.M Grandeur',
-      'order_id': 'order_EMBFqjDHEEn80l',
-      'timeout': 300,
-      'prefill': {'contact': '', 'email': ''}
-    };
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
   Future<void> fetchUserData() async {
     try {
       final userSnapshot = await FirebaseFirestore.instance
@@ -81,6 +69,7 @@ class _AdminHomeState extends State<AdminHome> {
         final userData = userSnapshot.data() as Map<String, dynamic>;
         setState(() {
           flatNumber = userData['flat'] ?? 0;
+          isAdmin = userData['role'] ?? '';
         });
         print('User data exists: $userData');
       } else {
@@ -92,14 +81,43 @@ class _AdminHomeState extends State<AdminHome> {
   }
 
   @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Widget _getSelectedScreen(int index) {
+    if (index == 0) {
+      return NoticeBoardScreen(isAdmin: true);
+    } else if (index == 1) {
+      return MaintenanceScreen(
+        username: widget.username,
+        predefinedAmount: predefinedAmount,
+        razorpay: _razorpay,
+        flatNumber: flatNumber,
+      );
+    } else if (index == 2) {
+      return ProfileScreen(username: widget.username);
+    } else {
+      return Container(); // Placeholder, add other screens as needed
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-            icon: Icon(Icons.login),
+            icon: const Icon(Icons.login),
             color: Colors.white,
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
@@ -108,152 +126,271 @@ class _AdminHomeState extends State<AdminHome> {
           ),
         ],
         backgroundColor: Colors.black,
-        title: Center(
+        title: const Center(
           child: Text(
             "Admin",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Welcome ${widget.username}!",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Flat No: $flatNumber",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Notice ",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "Below are the maintenance details for your flat, the payment button opens a dialog box, enter the right amount and continue with RazorPay safe payment ...",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shadowColor: Colors.white,
-                  elevation: 8,
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return PaymentDialog(
-                        razorpay: _razorpay,
-                        makePaymentCallback: makePayment,
-                      );
-                    },
-                  );
-                },
-                icon: Icon(Icons.payment),
-                label: Text(
-                  "Payment",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-            ],
+      body: _getSelectedScreen(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedLabelStyle: TextStyle(color: Colors.white),
+        selectedIconTheme: IconThemeData(color: Colors.white),
+        unselectedIconTheme: IconThemeData(color: Colors.white38),
+        unselectedLabelStyle: TextStyle(color: Colors.white),
+        backgroundColor: Colors.black,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notification_important),
+            label: 'Notice',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_repair_service),
+            label: 'Maintenance',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white38,
+        onTap: _onItemTapped,
       ),
       drawer: MyDrawer(username: widget.username),
     );
   }
 }
 
-class PaymentDialog extends StatelessWidget {
+class MaintenanceScreen extends StatelessWidget {
+  final String username;
+  final double predefinedAmount;
   final Razorpay razorpay;
-  final Function(BuildContext) makePaymentCallback;
+  final int flatNumber;
 
-  PaymentDialog({
+  MaintenanceScreen({
+    required this.username,
+    required this.predefinedAmount,
     required this.razorpay,
-    required this.makePaymentCallback,
+    required this.flatNumber,
   });
 
-  final TextEditingController amountController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Welcome $username!",
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Flat No: $flatNumber",
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: 2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Text(
+                      "Notice ",
+                      style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "Below are the maintenance details for your flat, the payment button opens a dialog box, enter the right amount and continue with RazorPay safe payment ...",
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shadowColor: Colors.white,
+                elevation: 8,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      PaymentDialog(razorpay, predefinedAmount),
+                );
+              },
+              icon: Icon(Icons.payment),
+              label: Text(
+                "Payment",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class NoticeBoardScreen extends StatelessWidget {
+  final bool isAdmin;
+
+  const NoticeBoardScreen({Key? key, required this.isAdmin}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            'Notice Screen',
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
+          Expanded(
+            child: Container(
+              child: isAdmin
+                  ? AdminNoticeBoard()
+                  : UserNoticeBoard(
+                      notices: [],
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PaymentDialog extends StatelessWidget {
+  final Razorpay _razorpay;
+  final double predefinedAmount;
+
+  PaymentDialog(this._razorpay, this.predefinedAmount);
+
+  final TextEditingController _amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'Payment',
-        textAlign: TextAlign.center,
+        'Maintenance Payment',
         style: GoogleFonts.poppins(
-          fontSize: 24,
+          fontSize: 20,
           fontWeight: FontWeight.w500,
         ),
       ),
-      content: TextFormField(
-        controller: amountController,
-        decoration: InputDecoration(
-            hintText: "Enter Maintenance Amount:", labelText: "Amount "),
-        keyboardType: TextInputType.number,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+              'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
+          SizedBox(height: 10),
+          TextField(
+            controller: _amountController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: 'Payment Amount'),
+          ),
+        ],
       ),
       actions: [
-        Center(
-          child: TextButton(
-            onPressed: () {
-              makePaymentCallback(context);
-            },
-            child: Text('Pay'),
-          ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            _startPayment(context);
+          },
+          child: Text('Pay'),
         ),
       ],
+    );
+  }
+
+  void _startPayment(BuildContext context) {
+    double paymentAmount = double.tryParse(_amountController.text) ?? 0.0;
+
+    if (paymentAmount <= 0) {
+      // Show an error message
+      Fluttertoast.showToast(
+        msg: "Invalid payment amount",
+        timeInSecForIosWeb: 4,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return;
+    }
+
+    // Configure payment options
+    var options = {
+      'key': 'rzp_test_ugZrbmLHkEGjBy',
+      'amount': (paymentAmount * 100).toInt(),
+      'name': 'V.M Grandeur',
+      'subscription_id': 'sub_MSOdGYZ9PmO29d',
+      'description': 'Payment for services',
+      'prefill': {'contact': '', 'email': ''},
+    };
+
+    _razorpay.open(options);
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  final String username;
+
+  ProfileScreen({required this.username});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Profile Screen\nUsername: $username',
+        style: TextStyle(fontSize: 24),
+      ),
     );
   }
 }
@@ -270,17 +407,20 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(color: Colors.black),
+            decoration: const BoxDecoration(color: Colors.black),
             child: Column(
               children: [
                 CircleAvatar(
-                  radius: 39,
+                  radius: 40,
                   backgroundImage: AssetImage('assets/images/profile.png'),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Text(
-                  "Hello Admin $username!",
+                  "Hello $username!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -293,10 +433,4 @@ class MyDrawer extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: AdminHome(username: "Admin", uid: "admin_uid"),
-  ));
 }

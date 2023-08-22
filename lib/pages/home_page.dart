@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:vmg/pages/Admin_notice.dart';
+import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int flatNumber = 0;
+  String isAdmin = "";
   double predefinedAmount = 100.0; // Replace with your predefined amount
   Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
@@ -65,6 +68,7 @@ class _HomePageState extends State<HomePage> {
         final userData = userSnapshot.data() as Map<String, dynamic>;
         setState(() {
           flatNumber = userData['flat'] ?? 0;
+          isAdmin = userData['role'] ?? '';
         });
         print('User data exists: $userData');
       } else {
@@ -89,7 +93,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
-      return NoticeScreen();
+      return NoticeBoardScreen(isAdmin: isAdmin == 'admin');
     } else if (index == 1) {
       return MaintenanceScreen(
         username: widget.username,
@@ -342,13 +346,33 @@ class PaymentDialog extends StatelessWidget {
   }
 }
 
-class NoticeScreen extends StatelessWidget {
+class NoticeBoardScreen extends StatelessWidget {
+  final bool isAdmin;
+
+  const NoticeBoardScreen({Key? key, required this.isAdmin}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        'Notice Screen',
-        style: TextStyle(fontSize: 24, color: Colors.white),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            'Notice Screen',
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
+          Expanded(
+            child: Container(
+              child: isAdmin
+                  ? AdminNoticeBoard()
+                  : UserNoticeBoard(
+                      notices: [],
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }
