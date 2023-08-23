@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:vmg/utils/colors.dart';
 
 class AdminNoticeBoard extends StatefulWidget {
   const AdminNoticeBoard({Key? key}) : super(key: key);
@@ -12,9 +16,15 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   late Stream<QuerySnapshot> noticesStream;
   List<String> notices = [];
 
+  getRandomColor() {
+    Random random = Random();
+    return backgroundColor[random.nextInt(backgroundColor.length)];
+  }
+
   @override
   void initState() {
     super.initState();
+
     noticesStream =
         FirebaseFirestore.instance.collection('notices').snapshots();
   }
@@ -46,6 +56,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
       });
       print('Notice added to Firestore with ID: $documentId');
       fetchNotices(); // Refresh the notices after addition
+      // Send the notification after adding the notice
     } catch (e) {
       print('Error adding notice to Firestore: $e');
     }
@@ -68,30 +79,69 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        String title = ''; // Add title variable
         String newNotice = '';
 
         return AlertDialog(
-          title: Text('Add Notice'),
-          content: TextField(
-            onChanged: (value) {
-              newNotice = value;
-            },
-            decoration: InputDecoration(labelText: 'Enter new notice'),
+          title: Center(
+              child: Text(
+            'Add Notice',
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          )),
+          content: Container(
+            height: 200, // Set the desired height for the content
+            child: Column(
+              children: [
+                TextField(
+                  onChanged: (value) {
+                    title = value;
+                  },
+                  decoration: InputDecoration(labelText: 'Enter notice title'),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  onChanged: (value) {
+                    newNotice = value;
+                  },
+                  maxLines: null, // Allow multiline input
+                  decoration: InputDecoration(labelText: 'Enter new notice'),
+                ),
+              ],
+            ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                _addNoticeToFirestore(newNotice,
-                    'AxBOX1ZHZTe43exskazA'); // Provide a unique document ID
-                Navigator.of(context).pop();
-              },
-              child: Text('Add'),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  _addNoticeToFirestore(
+                      '$title \n $newNotice', UniqueKey().toString());
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Add',
+                  style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54),
+                ),
+              ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54),
+                ),
+              ),
             ),
           ],
         );
@@ -128,15 +178,19 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                   return Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: Card(
+                      elevation: 5,
+                      surfaceTintColor: Colors.white,
+                      shadowColor: Colors.white,
+                      color: getRandomColor(),
                       child: ListTile(
                         title: Text(
                           noticeText,
-                          style: TextStyle(color: Colors.black87),
+                          style: GoogleFonts.ubuntu(color: Colors.black87),
                         ),
                         trailing: IconButton(
                           icon: Icon(
                             Icons.delete,
-                            color: Colors.grey.shade700,
+                            color: Colors.grey.shade900,
                           ),
                           onPressed: () {
                             _deleteNoticeFromFirestore(noticeId);

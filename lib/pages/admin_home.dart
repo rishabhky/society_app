@@ -284,9 +284,24 @@ class NoticeBoardScreen extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          Text(
-            'Notice Screen',
-            style: TextStyle(fontSize: 24, color: Colors.white),
+          GlowingOverscrollIndicator(
+            axisDirection: AxisDirection.down,
+            color: Colors.white,
+            child: Text(
+              'Notice Screen',
+              style: GoogleFonts.poppins(
+                fontSize: 24,
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
+                shadows: [
+                  Shadow(
+                    offset: Offset(0, 2), // Change the values as needed
+                    blurRadius: 10, // Change the value as needed
+                    color: Colors.white, // Change the color as needed
+                  ),
+                ],
+              ),
+            ),
           ),
           Expanded(
             child: Container(
