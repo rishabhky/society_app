@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 List<Color> backgroundColor = [
-  const Color.fromARGB(127, 158, 158, 158),
-  const Color.fromARGB(127, 158, 158, 158),
+  Color.fromARGB(224, 158, 158, 158),
+  Color.fromARGB(187, 203, 198, 198),
   Colors.white54,
   const Color.fromRGBO(128, 128, 128, 1),
   const Color.fromRGBO(169, 169, 169, 1),

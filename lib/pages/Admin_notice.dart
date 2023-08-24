@@ -24,7 +24,6 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   @override
   void initState() {
     super.initState();
-
     noticesStream =
         FirebaseFirestore.instance.collection('notices').snapshots();
   }
@@ -46,17 +45,17 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   }
 
   Future<void> _addNoticeToFirestore(
-      String newNotice, String documentId) async {
+      String title, String newNotice, String documentId) async {
     try {
       final documentRef =
           FirebaseFirestore.instance.collection('notices').doc(documentId);
       await documentRef.set({
+        'title': title,
         'text': newNotice,
         'createdAt': FieldValue.serverTimestamp(),
       });
       print('Notice added to Firestore with ID: $documentId');
-      fetchNotices(); // Refresh the notices after addition
-      // Send the notification after adding the notice
+      fetchNotices();
     } catch (e) {
       print('Error adding notice to Firestore: $e');
     }
@@ -69,7 +68,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
           .doc(documentId)
           .delete();
       print('Notice deleted from Firestore with ID: $documentId');
-      fetchNotices(); // Refresh the notices after deletion
+      fetchNotices();
     } catch (e) {
       print('Error deleting notice from Firestore: $e');
     }
@@ -79,71 +78,108 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String title = ''; // Add title variable
+        String title = '';
         String newNotice = '';
 
         return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: Colors.grey.shade900,
           title: Center(
-              child: Text(
-            'Add Notice',
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-            ),
-          )),
-          content: Container(
-            height: 200, // Set the desired height for the content
-            child: Column(
-              children: [
-                TextField(
-                  onChanged: (value) {
-                    title = value;
-                  },
-                  decoration: InputDecoration(labelText: 'Enter notice title'),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  onChanged: (value) {
-                    newNotice = value;
-                  },
-                  maxLines: null, // Allow multiline input
-                  decoration: InputDecoration(labelText: 'Enter new notice'),
-                ),
-              ],
+            child: Text(
+              'Add Notice',
+              style: GoogleFonts.poppins(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                color: Colors.white54,
+              ),
             ),
           ),
-          actions: [
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  _addNoticeToFirestore(
-                      '$title \n $newNotice', UniqueKey().toString());
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Add',
-                  style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black54),
-                ),
+          content: SingleChildScrollView(
+            child: Container(
+              width: double.maxFinite,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    cursorColor: Colors.white,
+                    onChanged: (value) {
+                      title = value;
+                    },
+                    style: TextStyle(
+                      color: Colors.white54,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Enter notice title',
+                      labelStyle: TextStyle(
+                        color: Colors.white54,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    onChanged: (value) {
+                      newNotice = value;
+                    },
+                    maxLines: null,
+                    style: TextStyle(
+                      color: Colors.white54,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Enter new notice',
+                      labelStyle: TextStyle(
+                        color: Colors.white54,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.grey.shade700)),
+                        onPressed: () {
+                          _addNoticeToFirestore(
+                            title,
+                            newNotice,
+                            UniqueKey().toString(),
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Add',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white54,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10), // Add spacing between buttons
+                      TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.grey.shade700)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Cancel',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white54,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Cancel',
-                  style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black54),
-                ),
-              ),
-            ),
-          ],
+          ),
         );
       },
     );
@@ -172,20 +208,34 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                 itemCount: notices.length,
                 itemBuilder: (context, index) {
                   final notice = notices[index].data() as Map<String, dynamic>;
-                  final noticeText = notice['text'] as String;
+                  final noticeText = notice['text'] as String?;
+                  final title = notice['title'] as String?;
                   final noticeId = notices[index].id;
 
                   return Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      margin: EdgeInsets.all(7),
                       elevation: 5,
                       surfaceTintColor: Colors.white,
                       shadowColor: Colors.white,
                       color: getRandomColor(),
                       child: ListTile(
+                        contentPadding: EdgeInsets.all(10),
+                        subtitle: Text(
+                          noticeText ?? '',
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.black45, fontSize: 15),
+                        ),
                         title: Text(
-                          noticeText,
-                          style: GoogleFonts.ubuntu(color: Colors.black87),
+                          title ?? '',
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.black87,
+                              fontSize: 19,
+                              fontWeight: FontWeight.w700),
                         ),
                         trailing: IconButton(
                           icon: Icon(
@@ -214,6 +264,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
               child: Icon(
                 Icons.add,
                 size: 38,
+                color: Colors.grey.shade900,
               ),
             ),
           ),

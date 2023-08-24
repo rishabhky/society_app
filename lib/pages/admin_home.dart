@@ -133,12 +133,16 @@ class _AdminHomeState extends State<AdminHome> {
           ),
         ),
       ),
-      body: _getSelectedScreen(_selectedIndex),
+      body: Column(
+        children: [
+          Expanded(child: _getSelectedScreen(_selectedIndex)),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(color: Colors.white),
-        selectedIconTheme: IconThemeData(color: Colors.white),
-        unselectedIconTheme: IconThemeData(color: Colors.white38),
-        unselectedLabelStyle: TextStyle(color: Colors.white),
+        selectedLabelStyle: const TextStyle(color: Colors.white),
+        selectedIconTheme: const IconThemeData(color: Colors.white),
+        unselectedIconTheme: const IconThemeData(color: Colors.white38),
+        unselectedLabelStyle: const TextStyle(color: Colors.white),
         backgroundColor: Colors.black,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
