@@ -187,89 +187,88 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        Expanded(
-          child: StreamBuilder<QuerySnapshot>(
-            stream: noticesStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
+    return Scaffold(
+      backgroundColor: Colors.grey.shade900,
+      body: Column(
+        children: [
+          SizedBox(height: 20),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: noticesStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
 
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
 
-              final notices = snapshot.data?.docs ?? [];
+                final notices = snapshot.data?.docs ?? [];
 
-              return ListView.builder(
-                itemCount: notices.length,
-                itemBuilder: (context, index) {
-                  final notice = notices[index].data() as Map<String, dynamic>;
-                  final noticeText = notice['text'] as String?;
-                  final title = notice['title'] as String?;
-                  final noticeId = notices[index].id;
+                return ListView.builder(
+                  itemCount: notices.length,
+                  itemBuilder: (context, index) {
+                    final notice =
+                        notices[index].data() as Map<String, dynamic>;
+                    final noticeText = notice['text'] as String?;
+                    final title = notice['title'] as String?;
+                    final noticeId = notices[index].id;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      margin: EdgeInsets.all(7),
-                      elevation: 5,
-                      surfaceTintColor: Colors.white,
-                      shadowColor: Colors.white,
-                      color: getRandomColor(),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(10),
-                        subtitle: Text(
-                          noticeText ?? '',
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.black45, fontSize: 15),
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 8),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        title: Text(
-                          title ?? '',
-                          style: GoogleFonts.ubuntu(
-                              color: Colors.black87,
-                              fontSize: 19,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.grey.shade900,
+                        margin: EdgeInsets.all(7),
+                        elevation: 5,
+                        surfaceTintColor: Colors.white,
+                        shadowColor: Colors.white,
+                        color: getRandomColor(),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(10),
+                          subtitle: Text(
+                            noticeText ?? '',
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.black45, fontSize: 15),
                           ),
-                          onPressed: () {
-                            _deleteNoticeFromFirestore(noticeId);
-                          },
+                          title: Text(
+                            title ?? '',
+                            style: GoogleFonts.ubuntu(
+                                color: Colors.black87,
+                                fontSize: 19,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.grey.shade900,
+                            ),
+                            onPressed: () {
+                              _deleteNoticeFromFirestore(noticeId);
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              key: UniqueKey(),
-              onPressed: _showAddNoticeDialog,
-              child: Icon(
-                Icons.add,
-                size: 38,
-                color: Colors.grey.shade900,
-              ),
+                    );
+                  },
+                );
+              },
             ),
           ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.grey.shade800,
+        onPressed: _showAddNoticeDialog,
+        key: UniqueKey(),
+        child: Icon(
+          Icons.add,
+          size: 38,
+          color: Colors.white54,
         ),
-      ],
+      ),
     );
   }
 }

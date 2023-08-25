@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -94,16 +96,18 @@ class _AdminHomeState extends State<AdminHome> {
 
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
-      return NoticeBoardScreen(isAdmin: true);
+      return SafeArea(child: NoticeBoardScreen(isAdmin: true));
     } else if (index == 1) {
-      return MaintenanceScreen(
-        username: widget.username,
-        predefinedAmount: predefinedAmount,
-        razorpay: _razorpay,
-        flatNumber: flatNumber,
+      return SafeArea(
+        child: MaintenanceScreen(
+          username: widget.username,
+          predefinedAmount: predefinedAmount,
+          razorpay: _razorpay,
+          flatNumber: flatNumber,
+        ),
       );
     } else if (index == 2) {
-      return ProfileScreen(username: widget.username);
+      return SafeArea(child: ProfileScreen(username: widget.username));
     } else {
       return Container(); // Placeholder, add other screens as needed
     }
@@ -112,8 +116,9 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey.shade900,
       appBar: AppBar(
+        elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -125,11 +130,24 @@ class _AdminHomeState extends State<AdminHome> {
             },
           ),
         ],
-        backgroundColor: Colors.black,
-        title: const Center(
-          child: Text(
-            "Admin",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        backgroundColor: Colors.grey.shade900,
+        title: Center(
+          child: GlowingOverscrollIndicator(
+            axisDirection: AxisDirection.down,
+            color: Colors.white,
+            child: Text(
+              "Admin",
+              style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  shadows: [
+                    const Shadow(
+                      offset: Offset(0, 1),
+                      blurRadius: 7,
+                      color: Colors.white,
+                    ),
+                  ]),
+            ),
           ),
         ),
       ),
@@ -139,22 +157,24 @@ class _AdminHomeState extends State<AdminHome> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        enableFeedback: false,
         selectedLabelStyle: const TextStyle(color: Colors.white),
         selectedIconTheme: const IconThemeData(color: Colors.white),
         unselectedIconTheme: const IconThemeData(color: Colors.white38),
         unselectedLabelStyle: const TextStyle(color: Colors.white),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.grey.shade900,
+        elevation: 10,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.notification_important),
+            icon: Icon(CupertinoIcons.bell),
             label: 'Notice',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_repair_service),
+            icon: Icon(CupertinoIcons.home),
             label: 'Maintenance',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(CupertinoIcons.person_2_fill),
             label: 'Profile',
           ),
         ],
@@ -267,7 +287,7 @@ class MaintenanceScreen extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -298,10 +318,10 @@ class NoticeBoardScreen extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.w300,
                 shadows: [
-                  Shadow(
-                    offset: Offset(0, 2), // Change the values as needed
-                    blurRadius: 10, // Change the value as needed
-                    color: Colors.white, // Change the color as needed
+                  const Shadow(
+                    offset: Offset(0, 2),
+                    blurRadius: 10,
+                    color: Colors.white,
                   ),
                 ],
               ),
