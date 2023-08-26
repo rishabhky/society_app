@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -156,32 +156,31 @@ class _AdminHomeState extends State<AdminHome> {
           Expanded(child: _getSelectedScreen(_selectedIndex)),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        enableFeedback: false,
-        selectedLabelStyle: const TextStyle(color: Colors.white),
-        selectedIconTheme: const IconThemeData(color: Colors.white),
-        unselectedIconTheme: const IconThemeData(color: Colors.white38),
-        unselectedLabelStyle: const TextStyle(color: Colors.white),
-        backgroundColor: Colors.grey.shade900,
-        elevation: 10,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.bell),
-            label: 'Notice',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
-            label: 'Maintenance',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person_2_fill),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white38,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: GNav(
+          color: Colors.white60,
+          activeColor: Colors.white,
+          tabBackgroundColor: Colors.grey.shade800,
+          gap: 8,
+          padding: EdgeInsets.all(16),
+          tabs: const [
+            GButton(
+              icon: CupertinoIcons.bell,
+              text: 'Notice',
+            ),
+            GButton(
+              icon: CupertinoIcons.home,
+              text: 'Maintenance',
+            ),
+            GButton(
+              icon: CupertinoIcons.person_2_fill,
+              text: 'Profile',
+            )
+          ],
+          selectedIndex: _selectedIndex,
+          onTabChange: _onItemTapped,
+        ),
       ),
       drawer: MyDrawer(username: widget.username),
     );
@@ -306,13 +305,13 @@ class NoticeBoardScreen extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 20,
+            height: 5,
           ),
           GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
             color: Colors.white,
             child: Text(
-              'Notice Screen',
+              'Notice Board',
               style: GoogleFonts.poppins(
                 fontSize: 24,
                 color: Colors.white,

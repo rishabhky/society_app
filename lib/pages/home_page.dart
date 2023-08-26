@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/pages/Admin_notice.dart';
 import 'package:vmg/pages/user_notice.dart';
@@ -133,30 +135,31 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: _getSelectedScreen(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(color: Colors.white),
-        selectedIconTheme: IconThemeData(color: Colors.white),
-        unselectedIconTheme: IconThemeData(color: Colors.white38),
-        unselectedLabelStyle: TextStyle(color: Colors.white),
-        backgroundColor: Colors.black,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notification_important),
-            label: 'Notice',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_repair_service),
-            label: 'Maintenance',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white38,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: GNav(
+          color: Colors.white60,
+          activeColor: Colors.white,
+          tabBackgroundColor: Colors.grey.shade800,
+          gap: 8,
+          padding: EdgeInsets.all(16),
+          tabs: const [
+            GButton(
+              icon: CupertinoIcons.bell,
+              text: 'Notice',
+            ),
+            GButton(
+              icon: CupertinoIcons.home,
+              text: 'Maintenance',
+            ),
+            GButton(
+              icon: CupertinoIcons.person_2_fill,
+              text: 'Profile',
+            )
+          ],
+          selectedIndex: _selectedIndex,
+          onTabChange: _onItemTapped,
+        ),
       ),
       drawer: MyDrawer(username: widget.username),
     );
