@@ -14,8 +14,13 @@ import 'Admin_notice.dart';
 class AdminHome extends StatefulWidget {
   final String username;
   final String uid;
+  final int initialSelectedScreen;
 
-  AdminHome({required this.username, required this.uid, Key? key})
+  AdminHome(
+      {required this.username,
+      required this.uid,
+      required this.initialSelectedScreen,
+      Key? key})
       : super(key: key);
 
   @override
@@ -32,6 +37,7 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialSelectedScreen;
     fetchUserData();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
@@ -109,14 +115,14 @@ class _AdminHomeState extends State<AdminHome> {
     } else if (index == 2) {
       return SafeArea(child: ProfileScreen(username: widget.username));
     } else {
-      return Container(); // Placeholder, add other screens as needed
+      return Container();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade900,
+      backgroundColor: Color(0xFF0C0D0D),
       appBar: AppBar(
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -130,7 +136,7 @@ class _AdminHomeState extends State<AdminHome> {
             },
           ),
         ],
-        backgroundColor: Colors.grey.shade900,
+        backgroundColor: Color(0xFF0C0D0D),
         title: Center(
           child: GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
@@ -161,7 +167,7 @@ class _AdminHomeState extends State<AdminHome> {
         child: GNav(
           color: Colors.white60,
           activeColor: Colors.white,
-          tabBackgroundColor: Colors.grey.shade800,
+          tabBackgroundColor: Color(0xFF1F1D20),
           gap: 8,
           padding: EdgeInsets.all(16),
           tabs: const [
@@ -182,7 +188,14 @@ class _AdminHomeState extends State<AdminHome> {
           onTabChange: _onItemTapped,
         ),
       ),
-      drawer: MyDrawer(username: widget.username),
+      drawer: MyDrawer(
+        initialSelectedScreen: _selectedIndex,
+        username: widget.username,
+        predefinedAmount: predefinedAmount,
+        razorpay: _razorpay,
+        flatNumber: flatNumber,
+        uid: widget.uid,
+      ),
     );
   }
 }
@@ -202,92 +215,94 @@ class MaintenanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Welcome $username!",
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Flat No: $flatNumber",
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+              Text(
+                "Welcome $username!",
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 2),
-                borderRadius: BorderRadius.circular(10),
+              const SizedBox(
+                height: 20,
               ),
-              child: Container(
+              Text(
+                "Flat No: $flatNumber",
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
                 decoration: BoxDecoration(
-                  color: Colors.transparent,
+                  border: Border.all(color: Colors.white, width: 2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Text(
-                      "Notice ",
-                      style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "Below are the maintenance details for your flat, the payment button opens a dialog box, enter the right amount and continue with RazorPay safe payment ...",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Notice ",
+                        style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ],
+                      Text(
+                        "Below are the maintenance details for your flat, the payment button opens a dialog box, enter the right amount and continue with RazorPay safe payment ...",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shadowColor: Colors.white,
-                elevation: 8,
+              const SizedBox(
+                height: 20,
               ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) =>
-                      PaymentDialog(razorpay, predefinedAmount),
-                );
-              },
-              icon: Icon(Icons.payment),
-              label: Text(
-                "Payment",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shadowColor: Colors.white,
+                  elevation: 8,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        PaymentDialog(razorpay, predefinedAmount),
+                  );
+                },
+                icon: const Icon(Icons.payment),
+                label: Text(
+                  "Payment",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -435,17 +450,30 @@ class ProfileScreen extends StatelessWidget {
 
 class MyDrawer extends StatelessWidget {
   final String username;
+  final int initialSelectedScreen; // Updated property
+  final double predefinedAmount;
+  final Razorpay razorpay;
+  final int flatNumber;
+  final String uid;
 
-  const MyDrawer({required this.username, Key? key}) : super(key: key);
+  const MyDrawer({
+    required this.username,
+    required this.initialSelectedScreen,
+    required this.predefinedAmount,
+    required this.razorpay,
+    required this.flatNumber,
+    required this.uid,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.black.withOpacity(0.85),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(color: Colors.black),
             child: Column(
               children: [
                 CircleAvatar(
@@ -467,7 +495,99 @@ class MyDrawer extends StatelessWidget {
               ],
             ),
           ),
+          customListItem(
+            leading: CupertinoIcons.news,
+            title: "Notices",
+            currentIndex: 0,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminHome(
+                      username: username,
+                      uid: uid,
+                      initialSelectedScreen: 0), // Updated index to 0
+                ),
+              );
+            },
+          ),
+          customListItem(
+            leading: CupertinoIcons.money_dollar,
+            title: "Maintenance",
+            currentIndex: 1,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminHome(
+                      username: username,
+                      uid: uid,
+                      initialSelectedScreen: 1), // Updated index to 0
+                ),
+              );
+            },
+          ),
+          customListItem(
+            leading: CupertinoIcons.person,
+            title: "Profile",
+            currentIndex: 2,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminHome(
+                      username: username,
+                      uid: uid,
+                      initialSelectedScreen: 2), // Updated index to 0
+                ),
+              );
+            },
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget customListItem({
+    required IconData leading,
+    required String title,
+    required int currentIndex,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Ink(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+            topLeft: Radius.circular(30),
+            bottomLeft: Radius.circular(30),
+          ),
+          color: currentIndex == initialSelectedScreen
+              ? Color(0xFF1f1d20).withOpacity(0.85)
+              : Colors.transparent,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50.0),
+          child: ListTile(
+            leading: Icon(
+              leading,
+              color: Colors.white,
+            ),
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.ubuntu(
+                fontSize: 17,
+                color: currentIndex == initialSelectedScreen
+                    ? Colors.white
+                    : Colors.grey, // Set text color
+              ),
+            ),
+            onTap: onTap,
+          ),
+        ),
       ),
     );
   }

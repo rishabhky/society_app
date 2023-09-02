@@ -7,6 +7,7 @@ import 'package:vmg/pages/admin_page.dart';
 import 'package:vmg/pages/auth_page.dart';
 import 'package:vmg/pages/home_page.dart';
 import 'package:vmg/pages/login_page.dart';
+import 'package:vmg/pages/Admin_notice.dart';
 import 'package:vmg/utils/routes.dart';
 
 void main() async {
@@ -30,13 +31,16 @@ class MyApp extends StatelessWidget {
         MyRoutes.homeRoute: (context) => HomePage(
               uid: ModalRoute.of(context)!.settings.arguments as String,
               username: '',
+              initialSelectedScreen: 0,
             ),
         MyRoutes.loginRoute: (context) => LoginPage(),
         MyRoutes.regRoute: (context) => const Adminpage(),
         MyRoutes.adminRoute: (context) => AdminHome(
               uid: ModalRoute.of(context)!.settings.arguments as String,
               username: '',
+              initialSelectedScreen: 0,
             ),
+        MyRoutes.adminNotice: (context) => AdminNoticeBoard(),
       },
     );
   }

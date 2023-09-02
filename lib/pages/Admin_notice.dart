@@ -25,6 +25,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   @override
   void initState() {
     super.initState();
+
     noticesStream =
         FirebaseFirestore.instance.collection('notices').snapshots();
   }
@@ -200,7 +201,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade900,
+      backgroundColor: Color(0xFF0C0D0D),
       body: Column(
         children: [
           SizedBox(height: 20),
@@ -272,7 +273,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.grey.shade800,
+        backgroundColor: Color(0xFF1F1D20),
         onPressed: _showAddNoticeDialog,
         key: UniqueKey(),
         child: Icon(

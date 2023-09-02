@@ -33,11 +33,13 @@ class AuthPage extends StatelessWidget {
                       return AdminHome(
                         uid: user.uid,
                         username: '',
+                        initialSelectedScreen: 0,
                       ); // Pass UID here
                     } else {
                       return HomePage(
                         uid: user.uid,
                         username: '',
+                        initialSelectedScreen: 0,
                       ); // Pass UID here
                     }
                   } else {

@@ -69,19 +69,34 @@ class _UserNoticeBoardState extends State<UserNoticeBoard> {
                 itemCount: notices.length,
                 itemBuilder: (context, index) {
                   final notice = notices[index].data() as Map<String, dynamic>;
-                  final noticeText = notice['text'] as String;
+                  final noticeText = notice['text'] as String?;
+                  final title = notice['title'] as String?;
                   final noticeId = notices[index].id;
 
                   return Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      margin: EdgeInsets.all(7),
                       elevation: 5,
+                      surfaceTintColor: Colors.white,
                       shadowColor: Colors.white,
                       color: getRandomColor(),
                       child: ListTile(
+                        contentPadding: EdgeInsets.all(10),
+                        subtitle: Text(
+                          noticeText ?? '',
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.black45, fontSize: 15),
+                        ),
                         title: Text(
-                          noticeText,
-                          style: GoogleFonts.poppins(color: Colors.black87),
+                          title ?? '',
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.black87,
+                              fontSize: 19,
+                              fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
