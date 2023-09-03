@@ -18,6 +18,8 @@ class EditScreen extends StatefulWidget {
 }
 
 class _EditScreenState extends State<EditScreen> {
+  late Stream<QuerySnapshot> noticesStream;
+  List<String> notices = [];
   late TextEditingController titleController;
   late TextEditingController noticeController;
 
@@ -50,6 +52,39 @@ class _EditScreenState extends State<EditScreen> {
           content: Text(e.toString()),
         ),
       );
+    }
+  }
+
+  Future<void> fetchNotices() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('notices')
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      setState(() {
+        notices =
+            querySnapshot.docs.map((doc) => doc['text'] as String).toList();
+      });
+    } catch (e) {
+      print('Error fetching notices: $e');
+    }
+  }
+
+  Future<void> _addNoticeToFirestore(
+      String title, String newNotice, String documentId) async {
+    try {
+      final documentRef =
+          FirebaseFirestore.instance.collection('notices').doc(documentId);
+      await documentRef.set({
+        'title': title,
+        'text': newNotice,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      print('Notice added to Firestore with ID: $documentId');
+      fetchNotices();
+    } catch (e) {
+      print('Error adding notice to Firestore: $e');
     }
   }
 
@@ -172,6 +207,24 @@ class _EditScreenState extends State<EditScreen> {
                       .delete();
                   Navigator.pop(context);
                 }),
+            SpeedDialChild(
+              backgroundColor: const Color(0xFF1f1d20),
+              child: const Icon(
+                CupertinoIcons.plus,
+                color: Colors.grey,
+              ),
+              label: "Add",
+              labelBackgroundColor: Color(0xFF1f1d20),
+              labelStyle: TextStyle(color: Colors.grey),
+              onTap: () {
+                _addNoticeToFirestore(
+                  titleController.text,
+                  noticeController.text,
+                  UniqueKey().toString(),
+                );
+                Navigator.of(context).pop();
+              },
+            ),
           ],
           iconTheme:
               IconThemeData(color: Colors.grey.shade400.withOpacity(0.8))),

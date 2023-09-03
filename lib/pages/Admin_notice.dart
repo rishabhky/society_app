@@ -79,127 +79,127 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
     }
   }
 
-  void _showAddNoticeDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        String title = '';
-        String newNotice = '';
+  // void _showAddNoticeDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       String title = '';
+  //       String newNotice = '';
 
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            backgroundColor: Colors.grey.shade900.withOpacity(0.85),
-            title: Center(
-              child: Text(
-                'Add Notice',
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white54,
-                ),
-              ),
-            ),
-            content: SingleChildScrollView(
-              child: Container(
-                width: double.maxFinite,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextField(
-                      cursorColor: Colors.white,
-                      onChanged: (value) {
-                        title = value;
-                      },
-                      style: TextStyle(
-                        color: Colors.white54,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Enter notice title',
-                        labelStyle: TextStyle(
-                          color: Colors.white54,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    TextField(
-                      onChanged: (value) {
-                        newNotice = value;
-                      },
-                      maxLines: null,
-                      style: TextStyle(
-                        color: Colors.white54,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Enter new notice',
-                        labelStyle: TextStyle(
-                          color: Colors.white54,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                              backgroundColor: MaterialStatePropertyAll(
-                                  Colors.grey.shade700)),
-                          onPressed: () {
-                            _addNoticeToFirestore(
-                              title,
-                              newNotice,
-                              UniqueKey().toString(),
-                            );
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            'Add',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white54,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 20), // Add spacing between buttons
-                        TextButton(
-                          style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                              backgroundColor: MaterialStatePropertyAll(
-                                  Colors.grey.shade700)),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            'Cancel',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white54,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //       return BackdropFilter(
+  //         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+  //         child: AlertDialog(
+  //           shape:
+  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  //           backgroundColor: Colors.grey.shade900.withOpacity(0.85),
+  //           title: Center(
+  //             child: Text(
+  //               'Add Notice',
+  //               style: GoogleFonts.poppins(
+  //                 fontSize: 24,
+  //                 fontWeight: FontWeight.w500,
+  //                 color: Colors.white54,
+  //               ),
+  //             ),
+  //           ),
+  //           content: SingleChildScrollView(
+  //             child: Container(
+  //               width: double.maxFinite,
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.stretch,
+  //                 children: [
+  //                   TextField(
+  //                     cursorColor: Colors.white,
+  //                     onChanged: (value) {
+  //                       title = value;
+  //                     },
+  //                     style: TextStyle(
+  //                       color: Colors.white54,
+  //                     ),
+  //                     decoration: InputDecoration(
+  //                       labelText: 'Enter notice title',
+  //                       labelStyle: TextStyle(
+  //                         color: Colors.white54,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   SizedBox(height: 10),
+  //                   TextField(
+  //                     onChanged: (value) {
+  //                       newNotice = value;
+  //                     },
+  //                     maxLines: null,
+  //                     style: TextStyle(
+  //                       color: Colors.white54,
+  //                     ),
+  //                     decoration: InputDecoration(
+  //                       labelText: 'Enter new notice',
+  //                       labelStyle: TextStyle(
+  //                         color: Colors.white54,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   SizedBox(height: 20),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       TextButton(
+  //                         style: ButtonStyle(
+  //                             shape: MaterialStateProperty.all<
+  //                                     RoundedRectangleBorder>(
+  //                                 RoundedRectangleBorder(
+  //                                     borderRadius: BorderRadius.circular(20))),
+  //                             backgroundColor: MaterialStatePropertyAll(
+  //                                 Colors.grey.shade700)),
+  //                         onPressed: () {
+  //                           _addNoticeToFirestore(
+  //                             title,
+  //                             newNotice,
+  //                             UniqueKey().toString(),
+  //                           );
+  //                           Navigator.of(context).pop();
+  //                         },
+  //                         child: Text(
+  //                           'Add',
+  //                           style: GoogleFonts.poppins(
+  //                             fontSize: 16,
+  //                             fontWeight: FontWeight.w500,
+  //                             color: Colors.white54,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       SizedBox(width: 20), // Add spacing between buttons
+  //                       TextButton(
+  //                         style: ButtonStyle(
+  //                             shape: MaterialStateProperty.all<
+  //                                     RoundedRectangleBorder>(
+  //                                 RoundedRectangleBorder(
+  //                                     borderRadius: BorderRadius.circular(20))),
+  //                             backgroundColor: MaterialStatePropertyAll(
+  //                                 Colors.grey.shade700)),
+  //                         onPressed: () {
+  //                           Navigator.of(context).pop();
+  //                         },
+  //                         child: Text(
+  //                           'Cancel',
+  //                           style: GoogleFonts.poppins(
+  //                             fontSize: 16,
+  //                             fontWeight: FontWeight.w500,
+  //                             color: Colors.white54,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +286,18 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFF1F1D20),
-        onPressed: _showAddNoticeDialog,
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => EditScreen(documentId: ''),
+            ),
+          );
+          if (result == true) {
+            // Refresh the notices when you return from the EditScreen
+            fetchNotices();
+          }
+        },
         key: UniqueKey(),
         child: const Icon(
           CupertinoIcons.plus,
