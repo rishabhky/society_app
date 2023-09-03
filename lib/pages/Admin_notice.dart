@@ -1,10 +1,13 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vmg/pages/edit_page.dart';
 import 'package:vmg/utils/colors.dart';
+import 'package:vmg/utils/routes.dart';
 
 class AdminNoticeBoard extends StatefulWidget {
   const AdminNoticeBoard({Key? key}) : super(key: key);
@@ -240,6 +243,15 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                         shadowColor: Colors.white,
                         color: getRandomColor(),
                         child: ListTile(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EditScreen(documentId: noticeId),
+                              ),
+                            );
+                          },
                           contentPadding: EdgeInsets.all(10),
                           subtitle: Text(
                             noticeText ?? '',
@@ -276,9 +288,9 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
         backgroundColor: Color(0xFF1F1D20),
         onPressed: _showAddNoticeDialog,
         key: UniqueKey(),
-        child: Icon(
-          Icons.add,
-          size: 38,
+        child: const Icon(
+          CupertinoIcons.plus,
+          size: 32,
           color: Colors.white54,
         ),
       ),

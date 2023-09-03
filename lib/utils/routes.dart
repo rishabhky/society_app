@@ -5,4 +5,5 @@ class MyRoutes {
   static String authRoute = "/auth";
   static String adminRoute = "/adminhome";
   static String adminNotice = "/admin_notice_board";
+  static String editPage = "/edit";
 }

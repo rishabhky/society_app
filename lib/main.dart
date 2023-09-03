@@ -5,6 +5,7 @@ import 'package:vmg/firebase_options.dart';
 import 'package:vmg/pages/admin_home.dart';
 import 'package:vmg/pages/admin_page.dart';
 import 'package:vmg/pages/auth_page.dart';
+import 'package:vmg/pages/edit_page.dart';
 import 'package:vmg/pages/home_page.dart';
 import 'package:vmg/pages/login_page.dart';
 import 'package:vmg/pages/Admin_notice.dart';
@@ -41,6 +42,9 @@ class MyApp extends StatelessWidget {
               initialSelectedScreen: 0,
             ),
         MyRoutes.adminNotice: (context) => AdminNoticeBoard(),
+        MyRoutes.editPage: (context) => EditScreen(
+              documentId: '',
+            ),
       },
     );
   }
