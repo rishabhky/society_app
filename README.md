@@ -26,10 +26,11 @@ Enhanced User Profiles: Customize your profile and add additional information fo
 Mobile Alerts: Get instant notifications for important updates and announcements.
 
 ## Screenshots
-![login](https://github.com/rishabhky/society_app/assets/126579114/55d0d805-343d-42e7-b6e6-43dd02f65725)
-![drawer](https://github.com/rishabhky/society_app/assets/126579114/4b976692-da65-4282-990e-01a9b2fc004a)
-![payment](https://github.com/rishabhky/society_app/assets/126579114/08ccdccf-19bf-43b2-bead-bee0a060abca)
-![maintenance](https://github.com/rishabhky/society_app/assets/126579114/fbd54a8f-8de2-405b-b2fc-958c7f840595)
-![text](https://github.com/rishabhky/society_app/assets/126579114/83039d8c-1177-42de-8902-470e039dfdea)
-![float](https://github.com/rishabhky/society_app/assets/126579114/23ee648d-6468-401c-829f-c8bdd28134d5)
-![notice](https://github.com/rishabhky/society_app/assets/126579114/c18976d2-7024-4a3a-aeb5-fd820e79853a)
+<img src="https://github.com/rishabhky/society_app/assets/126579114/55d0d805-343d-42e7-b6e6-43dd02f65725" alt="login" width="50%" height="50%">
+<img src="https://github.com/rishabhky/society_app/assets/126579114/4b976692-da65-4282-990e-01a9b2fc004a" alt="drawer" width="50%" height="50%">
+<img src="https://github.com/rishabhky/society_app/assets/126579114/08ccdccf-19bf-43b2-bead-bee0a060abca" alt="payment" width="50%" height="50%">
+<img src="https://github.com/rishabhky/society_app/assets/126579114/fbd54a8f-8de2-405b-b2fc-958c7f840595" alt="maintenance" width="50%" height="50%">
+<img src="https://github.com/rishabhky/society_app/assets/126579114/83039d8c-1177-42de-8902-470e039dfdea" alt="text" width="50%" height="50%">
+<img src="https://github.com/rishabhky/society_app/assets/126579114/23ee648d-6468-401c-829f-c8bdd28134d5" alt="float" width="50%" height="50%">
+<img src="https://github.com/rishabhky/society_app/assets/126579114/c18976d2-7024-4a3a-aeb5-fd820e79853a" alt="notice" width="50%" height="50%">
+
