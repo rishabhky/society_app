@@ -26,11 +26,13 @@ Enhanced User Profiles: Customize your profile and add additional information fo
 Mobile Alerts: Get instant notifications for important updates and announcements.
 
 ## Screenshots
-<img src="https://github.com/rishabhky/society_app/assets/126579114/55d0d805-343d-42e7-b6e6-43dd02f65725" alt="login" width="50%" height="50%">
-<img src="https://github.com/rishabhky/society_app/assets/126579114/4b976692-da65-4282-990e-01a9b2fc004a" alt="drawer" width="50%" height="50%">
-<img src="https://github.com/rishabhky/society_app/assets/126579114/08ccdccf-19bf-43b2-bead-bee0a060abca" alt="payment" width="50%" height="50%">
-<img src="https://github.com/rishabhky/society_app/assets/126579114/fbd54a8f-8de2-405b-b2fc-958c7f840595" alt="maintenance" width="50%" height="50%">
-<img src="https://github.com/rishabhky/society_app/assets/126579114/83039d8c-1177-42de-8902-470e039dfdea" alt="text" width="50%" height="50%">
-<img src="https://github.com/rishabhky/society_app/assets/126579114/23ee648d-6468-401c-829f-c8bdd28134d5" alt="float" width="50%" height="50%">
-<img src="https://github.com/rishabhky/society_app/assets/126579114/c18976d2-7024-4a3a-aeb5-fd820e79853a" alt="notice" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/126579114/265722400-affd7eb0-55ee-4f38-8dd3-62bcedb8cce6.jpeg" alt="login" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/126579114/265722423-194e81c4-5925-47b3-9c67-c0b7cb51c9bc.jpeg" alt="login" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/126579114/265722476-63436bab-df56-4627-9a2e-1b8163ab41ea.jpeg" alt="login" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/126579114/265722509-f4df1867-64dc-4b25-8ea5-bb4123be6584.jpeg" alt="login" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/126579114/265722679-1260b719-b66a-4d2c-8598-0d3e9d5b6c5a.jpeg" alt="login" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/126579114/265722531-43f06d8c-3c67-4c9f-a85f-d01fac80d2bb.jpeg" alt="login" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/126579114/265722637-6c1c8442-8622-4e41-87b7-3635521aea20.jpeg" alt="login" width="50%" height="50%">
+
+
 
