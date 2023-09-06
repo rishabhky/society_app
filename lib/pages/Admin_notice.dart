@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,8 +19,12 @@ class AdminNoticeBoard extends StatefulWidget {
 }
 
 class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
+  late PDFDocument pdfDocument;
+  bool isLoading = true;
   late Stream<QuerySnapshot> noticesStream;
   List<String> notices = [];
+
+  String? pdfUrl;
 
   getRandomColor() {
     Random random = Random();
@@ -28,9 +34,32 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   @override
   void initState() {
     super.initState();
-
+    fetchNoticeDetails();
     noticesStream =
         FirebaseFirestore.instance.collection('notices').snapshots();
+  }
+
+  Future<void> fetchNoticeDetails() async {
+    try {
+      final documentSnapshot = await FirebaseFirestore.instance
+          .collection('notices')
+          .doc(UniqueKey().toString())
+          .get();
+
+      if (documentSnapshot.exists) {
+        final noticeData = documentSnapshot.data() as Map<String, dynamic>;
+
+        final pdfFileUrl = noticeData['pdfUrl'] as String?;
+
+        pdfUrl = pdfFileUrl;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    }
   }
 
   Future<void> fetchNotices() async {
@@ -79,128 +108,6 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
     }
   }
 
-  // void _showAddNoticeDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       String title = '';
-  //       String newNotice = '';
-
-  //       return BackdropFilter(
-  //         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-  //         child: AlertDialog(
-  //           shape:
-  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-  //           backgroundColor: Colors.grey.shade900.withOpacity(0.85),
-  //           title: Center(
-  //             child: Text(
-  //               'Add Notice',
-  //               style: GoogleFonts.poppins(
-  //                 fontSize: 24,
-  //                 fontWeight: FontWeight.w500,
-  //                 color: Colors.white54,
-  //               ),
-  //             ),
-  //           ),
-  //           content: SingleChildScrollView(
-  //             child: Container(
-  //               width: double.maxFinite,
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.stretch,
-  //                 children: [
-  //                   TextField(
-  //                     cursorColor: Colors.white,
-  //                     onChanged: (value) {
-  //                       title = value;
-  //                     },
-  //                     style: TextStyle(
-  //                       color: Colors.white54,
-  //                     ),
-  //                     decoration: InputDecoration(
-  //                       labelText: 'Enter notice title',
-  //                       labelStyle: TextStyle(
-  //                         color: Colors.white54,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   SizedBox(height: 10),
-  //                   TextField(
-  //                     onChanged: (value) {
-  //                       newNotice = value;
-  //                     },
-  //                     maxLines: null,
-  //                     style: TextStyle(
-  //                       color: Colors.white54,
-  //                     ),
-  //                     decoration: InputDecoration(
-  //                       labelText: 'Enter new notice',
-  //                       labelStyle: TextStyle(
-  //                         color: Colors.white54,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   SizedBox(height: 20),
-  //                   Row(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       TextButton(
-  //                         style: ButtonStyle(
-  //                             shape: MaterialStateProperty.all<
-  //                                     RoundedRectangleBorder>(
-  //                                 RoundedRectangleBorder(
-  //                                     borderRadius: BorderRadius.circular(20))),
-  //                             backgroundColor: MaterialStatePropertyAll(
-  //                                 Colors.grey.shade700)),
-  //                         onPressed: () {
-  //                           _addNoticeToFirestore(
-  //                             title,
-  //                             newNotice,
-  //                             UniqueKey().toString(),
-  //                           );
-  //                           Navigator.of(context).pop();
-  //                         },
-  //                         child: Text(
-  //                           'Add',
-  //                           style: GoogleFonts.poppins(
-  //                             fontSize: 16,
-  //                             fontWeight: FontWeight.w500,
-  //                             color: Colors.white54,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       SizedBox(width: 20), // Add spacing between buttons
-  //                       TextButton(
-  //                         style: ButtonStyle(
-  //                             shape: MaterialStateProperty.all<
-  //                                     RoundedRectangleBorder>(
-  //                                 RoundedRectangleBorder(
-  //                                     borderRadius: BorderRadius.circular(20))),
-  //                             backgroundColor: MaterialStatePropertyAll(
-  //                                 Colors.grey.shade700)),
-  //                         onPressed: () {
-  //                           Navigator.of(context).pop();
-  //                         },
-  //                         child: Text(
-  //                           'Cancel',
-  //                           style: GoogleFonts.poppins(
-  //                             fontSize: 16,
-  //                             fontWeight: FontWeight.w500,
-  //                             color: Colors.white54,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,6 +137,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                     final noticeText = notice['text'] as String?;
                     final title = notice['title'] as String?;
                     final noticeId = notices[index].id;
+                    final pdfUrl = notice['pdfUrl'] as String?;
 
                     return Padding(
                       padding: const EdgeInsets.only(left: 8, right: 8),
@@ -253,6 +161,27 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                             );
                           },
                           contentPadding: EdgeInsets.all(10),
+                          leading: IconButton(
+                            icon: Icon(
+                              Icons.picture_as_pdf,
+                              color: Colors.grey.shade900,
+                            ),
+                            onPressed: () async {
+                              if (pdfUrl != null) {
+                                PDFDocument pdfDocument =
+                                    await PDFDocument.fromURL(pdfUrl);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PDFViewer(document: pdfDocument),
+                                  ),
+                                );
+                              } else {
+                                // Handle case where the PDF URL is not available.
+                              }
+                            },
+                          ),
                           subtitle: Text(
                             noticeText ?? '',
                             style: GoogleFonts.ubuntu(

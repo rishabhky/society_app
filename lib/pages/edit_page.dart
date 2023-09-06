@@ -1,9 +1,11 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
-import '../utils/routes.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 
 class EditScreen extends StatefulWidget {
   final String documentId;
@@ -22,6 +24,8 @@ class _EditScreenState extends State<EditScreen> {
   List<String> notices = [];
   late TextEditingController titleController;
   late TextEditingController noticeController;
+  String? pdfUrl;
+  bool hasPdf = false;
 
   @override
   void initState() {
@@ -42,9 +46,17 @@ class _EditScreenState extends State<EditScreen> {
         final noticeData = documentSnapshot.data() as Map<String, dynamic>;
         final title = noticeData['title'] as String?;
         final notice = noticeData['text'] as String?;
+        final pdfFileUrl = noticeData['pdfUrl'] as String?;
 
         titleController.text = title ?? '';
         noticeController.text = notice ?? '';
+        pdfUrl = pdfFileUrl;
+
+        if (pdfUrl != null) {
+          setState(() {
+            hasPdf = true;
+          });
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -52,6 +64,36 @@ class _EditScreenState extends State<EditScreen> {
           content: Text(e.toString()),
         ),
       );
+    }
+  }
+
+  Future<void> _uploadPDF() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+
+      if (result != null) {
+        File pdfFile = File(result.files.single.path!);
+
+        final storageRef = FirebaseStorage.instance
+            .ref()
+            .child('pdfs/${widget.documentId}.pdf');
+        final uploadTask = storageRef.putFile(pdfFile);
+
+        await uploadTask.whenComplete(() async {
+          final downloadUrl = await storageRef.getDownloadURL();
+          final pdfUrl = downloadUrl.toString();
+
+          setState(() {
+            this.pdfUrl = pdfUrl;
+            hasPdf = true; // Set the flag to show the "View PDF" button
+          });
+        });
+      }
+    } catch (e) {
+      print('Error uploading pdf: $e');
     }
   }
 
@@ -79,6 +121,7 @@ class _EditScreenState extends State<EditScreen> {
       await documentRef.set({
         'title': title,
         'text': newNotice,
+        'pdfUrl': pdfUrl,
         'createdAt': FieldValue.serverTimestamp(),
       });
       print('Notice added to Firestore with ID: $documentId');
@@ -96,6 +139,7 @@ class _EditScreenState extends State<EditScreen> {
           .update({
         'title': titleController.text,
         'text': noticeController.text,
+        'pdfUrl': pdfUrl,
       });
 
       Navigator.pop(context);
@@ -166,7 +210,29 @@ class _EditScreenState extends State<EditScreen> {
                     hintStyle: TextStyle(
                         color: Colors.grey.withOpacity(0.8), fontSize: 18),
                   ),
-                )
+                ),
+                if (hasPdf)
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (pdfUrl != null) {
+                        PDFDocument pdfDocument =
+                            await PDFDocument.fromURL(pdfUrl!);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PDFViewer(document: pdfDocument),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text('View PDF'),
+                  ),
+                if (hasPdf == false)
+                  ElevatedButton(
+                    onPressed: _uploadPDF,
+                    child: Text('Upload PDF'),
+                  ),
               ],
             ))
           ],
@@ -207,6 +273,21 @@ class _EditScreenState extends State<EditScreen> {
                       .delete();
                   Navigator.pop(context);
                 }),
+            if (hasPdf == false)
+              SpeedDialChild(
+                backgroundColor: const Color(0xFF1f1d20),
+                child: const Icon(
+                  Icons.attach_file,
+                  color: Colors.grey,
+                ),
+                label: "Add Pdf",
+                labelBackgroundColor: Color(0xFF1f1d20),
+                labelStyle: TextStyle(color: Colors.grey),
+                onTap: () {
+                  _uploadPDF;
+                  Navigator.of(context).pop();
+                },
+              ),
             SpeedDialChild(
               backgroundColor: const Color(0xFF1f1d20),
               child: const Icon(
@@ -224,7 +305,7 @@ class _EditScreenState extends State<EditScreen> {
                 );
                 Navigator.of(context).pop();
               },
-            ),
+            )
           ],
           iconTheme:
               IconThemeData(color: Colors.grey.shade400.withOpacity(0.8))),
