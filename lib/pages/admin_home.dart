@@ -9,19 +9,22 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
 
+import '../utils/drawer.dart';
 import 'Admin_notice.dart';
+import 'maintenance.dart';
 
 class AdminHome extends StatefulWidget {
   final String username;
+
   final String uid;
   final int initialSelectedScreen;
 
-  AdminHome(
-      {required this.username,
-      required this.uid,
-      required this.initialSelectedScreen,
-      Key? key})
-      : super(key: key);
+  AdminHome({
+    required this.username,
+    required this.uid,
+    required this.initialSelectedScreen,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<AdminHome> createState() => _AdminHomeState();
@@ -33,6 +36,7 @@ class _AdminHomeState extends State<AdminHome> {
   double predefinedAmount = 100.0; // Replace with your predefined amount
   Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
+  int maintenance = 0;
 
   @override
   void initState() {
@@ -78,6 +82,7 @@ class _AdminHomeState extends State<AdminHome> {
         setState(() {
           flatNumber = userData['flat'] ?? 0;
           isAdmin = userData['role'] ?? '';
+          maintenance = userData['maintenance'] ?? 0;
         });
         print('User data exists: $userData');
       } else {
@@ -106,7 +111,7 @@ class _AdminHomeState extends State<AdminHome> {
     } else if (index == 1) {
       return SafeArea(
         child: MaintenanceScreen(
-          username: widget.username,
+          maintenance: maintenance,
           predefinedAmount: predefinedAmount,
           razorpay: _razorpay,
           flatNumber: flatNumber,
@@ -195,115 +200,6 @@ class _AdminHomeState extends State<AdminHome> {
         razorpay: _razorpay,
         flatNumber: flatNumber,
         uid: widget.uid,
-      ),
-    );
-  }
-}
-
-class MaintenanceScreen extends StatelessWidget {
-  final String username;
-  final double predefinedAmount;
-  final Razorpay razorpay;
-  final int flatNumber;
-
-  MaintenanceScreen({
-    required this.username,
-    required this.predefinedAmount,
-    required this.razorpay,
-    required this.flatNumber,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Welcome $username!",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Flat No: $flatNumber",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Notice ",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "Below are the maintenance details for your flat, the payment button opens a dialog box, enter the right amount and continue with RazorPay safe payment ...",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shadowColor: Colors.white,
-                  elevation: 8,
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        PaymentDialog(razorpay, predefinedAmount),
-                  );
-                },
-                icon: const Icon(Icons.payment),
-                label: Text(
-                  "Payment",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -443,151 +339,6 @@ class ProfileScreen extends StatelessWidget {
       child: Text(
         'Profile Screen\nUsername: $username',
         style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class MyDrawer extends StatelessWidget {
-  final String username;
-  final int initialSelectedScreen; // Updated property
-  final double predefinedAmount;
-  final Razorpay razorpay;
-  final int flatNumber;
-  final String uid;
-
-  const MyDrawer({
-    required this.username,
-    required this.initialSelectedScreen,
-    required this.predefinedAmount,
-    required this.razorpay,
-    required this.flatNumber,
-    required this.uid,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: Colors.black.withOpacity(0.85),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage('assets/images/profile.png'),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Hello $username!",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          customListItem(
-            leading: CupertinoIcons.news,
-            title: "Notices",
-            currentIndex: 0,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 0), // Updated index to 0
-                ),
-              );
-            },
-          ),
-          customListItem(
-            leading: CupertinoIcons.money_dollar,
-            title: "Maintenance",
-            currentIndex: 1,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 1), // Updated index to 0
-                ),
-              );
-            },
-          ),
-          customListItem(
-            leading: CupertinoIcons.person,
-            title: "Profile",
-            currentIndex: 2,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 2), // Updated index to 0
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget customListItem({
-    required IconData leading,
-    required String title,
-    required int currentIndex,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-            topLeft: Radius.circular(30),
-            bottomLeft: Radius.circular(30),
-          ),
-          color: currentIndex == initialSelectedScreen
-              ? Color(0xFF1f1d20).withOpacity(0.85)
-              : Colors.transparent,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: ListTile(
-            leading: Icon(
-              leading,
-              color: Colors.white,
-            ),
-            title: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(
-                fontSize: 17,
-                color: currentIndex == initialSelectedScreen
-                    ? Colors.white
-                    : Colors.grey, // Set text color
-              ),
-            ),
-            onTap: onTap,
-          ),
-        ),
       ),
     );
   }
