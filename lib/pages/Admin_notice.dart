@@ -161,31 +161,80 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                             );
                           },
                           contentPadding: EdgeInsets.all(10),
-                          leading: IconButton(
-                            icon: Icon(
-                              Icons.picture_as_pdf,
-                              color: Colors.grey.shade900,
-                            ),
-                            onPressed: () async {
-                              if (pdfUrl != null) {
-                                PDFDocument pdfDocument =
-                                    await PDFDocument.fromURL(pdfUrl);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        PDFViewer(document: pdfDocument),
+                          // leading: IconButton(
+                          //   icon: Icon(
+                          //     Icons.picture_as_pdf,
+                          //     color: Colors.grey.shade900,
+                          //   ),
+                          //   onPressed: () async {
+                          //     if (pdfUrl != null) {
+                          //       PDFDocument pdfDocument =
+                          //           await PDFDocument.fromURL(pdfUrl);
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //           builder: (context) =>
+                          //               PDFViewer(document: pdfDocument),
+                          //         ),
+                          //       );
+                          //     } else {
+                          //       // Handle case where the PDF URL is not available.
+                          //     }
+                          //   },
+                          // ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                noticeText ?? '',
+                                style: GoogleFonts.ubuntu(
+                                    color: Colors.black45, fontSize: 15),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  pdfUrl != null
+                                      ? IconButton(
+                                          icon: Icon(
+                                            Icons.picture_as_pdf,
+                                            color: Colors.grey.shade900,
+                                          ),
+                                          onPressed: () async {
+                                            if (pdfUrl != null) {
+                                              PDFDocument pdfDocument =
+                                                  await PDFDocument.fromURL(
+                                                      pdfUrl);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PDFViewer(
+                                                          document:
+                                                              pdfDocument),
+                                                ),
+                                              );
+                                            } else {
+                                              // Handle case where the PDF URL is not available.
+                                            }
+                                          },
+                                        )
+                                      : SizedBox(
+                                          width: 0,
+                                        ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.grey.shade900,
+                                    ),
+                                    onPressed: () {
+                                      _deleteNoticeFromFirestore(noticeId);
+                                    },
                                   ),
-                                );
-                              } else {
-                                // Handle case where the PDF URL is not available.
-                              }
-                            },
-                          ),
-                          subtitle: Text(
-                            noticeText ?? '',
-                            style: GoogleFonts.ubuntu(
-                                color: Colors.black45, fontSize: 15),
+                                ],
+                              ),
+                            ],
                           ),
                           title: Text(
                             title ?? '',
@@ -194,15 +243,17 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                                 fontSize: 19,
                                 fontWeight: FontWeight.w700),
                           ),
-                          trailing: IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.grey.shade900,
-                            ),
-                            onPressed: () {
-                              _deleteNoticeFromFirestore(noticeId);
-                            },
-                          ),
+                          // trailing: // Align icons vertically centered
+
+                          //     IconButton(
+                          //   icon: Icon(
+                          //     Icons.delete,
+                          //     color: Colors.grey.shade900,
+                          //   ),
+                          //   onPressed: () {
+                          //     _deleteNoticeFromFirestore(noticeId);
+                          //   },
+                          // ),
                         ),
                       ),
                     );
