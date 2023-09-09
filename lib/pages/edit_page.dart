@@ -211,6 +211,7 @@ class _EditScreenState extends State<EditScreen> {
                         color: Colors.grey.withOpacity(0.8), fontSize: 18),
                   ),
                 ),
+
                 if (hasPdf)
                   ElevatedButton(
                     onPressed: () async {
@@ -228,11 +229,11 @@ class _EditScreenState extends State<EditScreen> {
                     },
                     child: Text('View PDF'),
                   ),
-                if (hasPdf == false)
-                  ElevatedButton(
-                    onPressed: _uploadPDF,
-                    child: Text('Upload PDF'),
-                  ),
+                // if (hasPdf == false)
+                //   ElevatedButton(
+                //     onPressed: _uploadPDF,
+                //     child: Text('Upload PDF'),
+                //   ),
               ],
             ))
           ],
@@ -283,10 +284,8 @@ class _EditScreenState extends State<EditScreen> {
                 label: "Add Pdf",
                 labelBackgroundColor: Color(0xFF1f1d20),
                 labelStyle: TextStyle(color: Colors.grey),
-                onTap: () {
-                  _uploadPDF;
-                  Navigator.of(context).pop();
-                },
+                onTap: _uploadPDF,
+                //Navigator.of(context).pop();
               ),
             SpeedDialChild(
               backgroundColor: const Color(0xFF1f1d20),

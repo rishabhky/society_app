@@ -115,7 +115,7 @@ class MyDrawer extends StatelessWidget {
       onTap: onTap,
       child: Ink(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             topRight: Radius.circular(30),
             bottomRight: Radius.circular(30),
             topLeft: Radius.circular(30),

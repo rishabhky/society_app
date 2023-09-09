@@ -127,21 +127,21 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0C0D0D),
+      backgroundColor: Color(0xFFffffff),
       appBar: AppBar(
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Color(0xff4B5350)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.login),
-            color: Colors.white,
+            icon: const Icon(Icons.logout),
+            color: Color(0xff4B5350),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacementNamed(context, MyRoutes.loginRoute);
             },
           ),
         ],
-        backgroundColor: Color(0xFF0C0D0D),
+        backgroundColor: Color(0xFFffffff),
         title: Center(
           child: GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
@@ -149,7 +149,7 @@ class _AdminHomeState extends State<AdminHome> {
             child: Text(
               "Admin",
               style: GoogleFonts.poppins(
-                  color: Colors.white,
+                  color: Color(0xff4B5350),
                   fontWeight: FontWeight.w500,
                   shadows: [
                     const Shadow(
@@ -170,7 +170,7 @@ class _AdminHomeState extends State<AdminHome> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: GNav(
-          color: Colors.white60,
+          color: Colors.grey.shade600,
           activeColor: Colors.white,
           tabBackgroundColor: Color(0xFF1F1D20),
           gap: 8,
@@ -179,6 +179,7 @@ class _AdminHomeState extends State<AdminHome> {
             GButton(
               icon: CupertinoIcons.bell,
               text: 'Notice',
+              textColor: Color(0xffefedec),
             ),
             GButton(
               icon: CupertinoIcons.home,
@@ -221,20 +222,32 @@ class NoticeBoardScreen extends StatelessWidget {
           GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
             color: Colors.white,
-            child: Text(
-              'Notice Board',
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-                shadows: [
-                  const Shadow(
-                    offset: Offset(0, 2),
-                    blurRadius: 10,
-                    color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Notice Board',
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    color: Color(0xff4B5350),
+                    fontWeight: FontWeight.w400,
+                    shadows: [
+                      const Shadow(
+                        offset: Offset(0, 2),
+                        blurRadius: 10,
+                        color: Colors.white,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  CupertinoIcons.doc_on_clipboard,
+                  color: Colors.grey.shade800,
+                )
+              ],
             ),
           ),
           Expanded(

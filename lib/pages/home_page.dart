@@ -124,24 +124,26 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFFffffff),
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Color(0xff4B5350)),
         actions: [
           IconButton(
             icon: const Icon(Icons.login),
-            color: Colors.white,
+            color: Color(0xff4B5350),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacementNamed(context, MyRoutes.loginRoute);
             },
           ),
         ],
-        backgroundColor: Colors.black,
+        backgroundColor: Color(0xFFffffff),
         title: const Center(
           child: Text(
             "Home",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Color(0xff4B5350), fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -149,7 +151,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: GNav(
-          color: Colors.white60,
+          color: Colors.grey.shade600,
           activeColor: Colors.white,
           tabBackgroundColor: Color(0xFF1F1D20),
           gap: 8,
@@ -275,7 +277,7 @@ class NoticeBoardScreen extends StatelessWidget {
           ),
           Text(
             'Notice Screen',
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            style: TextStyle(fontSize: 24, color: Color(0xff0a0b0a)),
           ),
           Expanded(
             child: Container(

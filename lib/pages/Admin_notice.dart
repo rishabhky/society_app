@@ -111,7 +111,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0C0D0D),
+      backgroundColor: Color(0xfffffff),
       body: Column(
         children: [
           SizedBox(height: 20),

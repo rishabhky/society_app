@@ -34,7 +34,7 @@ class MaintenanceScreen extends StatelessWidget {
                 Text(
                   "My Details",
                   style: GoogleFonts.poppins(
-                    color: Colors.white,
+                    color: Colors.grey.shade900,
                     fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
@@ -45,7 +45,7 @@ class MaintenanceScreen extends StatelessWidget {
                 Text(
                   "Flat No: $flatNumber",
                   style: GoogleFonts.poppins(
-                    color: Colors.white,
+                    color: Colors.grey.shade900,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -142,11 +142,9 @@ class MaintenanceScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white, width: 2),
@@ -154,7 +152,7 @@ class MaintenanceScreen extends StatelessWidget {
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.transparent,
+                      color: Color(0xFF1f1d20).withOpacity(0.9),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: EdgeInsets.all(10),
