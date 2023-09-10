@@ -11,6 +11,7 @@ import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
 
 import '../utils/drawer.dart';
+import 'chat_page.dart';
 import 'maintenance.dart';
 
 class HomePage extends StatefulWidget {
@@ -108,19 +109,27 @@ class _HomePageState extends State<HomePage> {
 
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
-      return MaintenanceScreen(
-        maintenance: maintenance,
-        predefinedAmount: predefinedAmount,
-        razorpay: _razorpay,
-        flatNumber: flatNumber,
-        name: name,
+      return SafeArea(
+        child: MaintenanceScreen(
+          maintenance: maintenance,
+          predefinedAmount: predefinedAmount,
+          razorpay: _razorpay,
+          flatNumber: flatNumber,
+          name: name,
+        ),
       );
     } else if (index == 1) {
-      return NoticeBoardScreen(isAdmin: isAdmin == 'admin');
+      return SafeArea(child: NoticeBoardScreen(isAdmin: true));
     } else if (index == 2) {
-      return ProfileScreen(username: widget.username);
+      return SafeArea(
+          child: ChatPage(
+        receiverId: widget.uid,
+        receiverMail: "user@gmail.com",
+      ));
+    } else if (index == 3) {
+      return SafeArea(child: ProfileScreen(username: widget.username));
     } else {
-      return Container(); // Placeholder, add other screens as needed
+      return Container();
     }
   }
 
@@ -168,6 +177,10 @@ class _HomePageState extends State<HomePage> {
             GButton(
               icon: CupertinoIcons.bell,
               text: 'Notices',
+            ),
+            GButton(
+              icon: CupertinoIcons.chat_bubble_2,
+              text: 'Chat',
             ),
             GButton(
               icon: CupertinoIcons.person_2_fill,

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:vmg/pages/chat_page.dart';
 import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
 
@@ -121,6 +122,12 @@ class _AdminHomeState extends State<AdminHome> {
     } else if (index == 1) {
       return SafeArea(child: NoticeBoardScreen(isAdmin: true));
     } else if (index == 2) {
+      return SafeArea(
+          child: ChatPage(
+        receiverId: widget.uid,
+        receiverMail: "admin@gmail.com",
+      ));
+    } else if (index == 3) {
       return SafeArea(child: ProfileScreen(username: widget.username));
     } else {
       return Container();
@@ -189,6 +196,10 @@ class _AdminHomeState extends State<AdminHome> {
               GButton(
                 icon: CupertinoIcons.bell,
                 text: 'Notices',
+              ),
+              GButton(
+                icon: CupertinoIcons.chat_bubble_2,
+                text: 'Chat',
               ),
               GButton(
                 icon: CupertinoIcons.person_2_fill,
