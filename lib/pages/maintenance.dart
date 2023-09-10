@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/utils/mybutton.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'admin_home.dart';
 
 class MaintenanceScreen extends StatefulWidget {
@@ -12,12 +13,14 @@ class MaintenanceScreen extends StatefulWidget {
   final double predefinedAmount;
   final Razorpay razorpay;
   final int flatNumber;
+  final String name;
 
   MaintenanceScreen({
     required this.maintenance,
     required this.predefinedAmount,
     required this.razorpay,
     required this.flatNumber,
+    required this.name,
   });
 
   @override
@@ -68,30 +71,25 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           child: Center(
             child: Column(
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "My Details",
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey.shade900,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Flat No: ${widget.flatNumber}",
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey.shade900,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      " Hello ${widget.name}\n Flat No: ${widget.flatNumber}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey.shade900,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Icon(
+                      FontAwesomeIcons.houseChimneyCrack,
+                      size: 100,
+                    )
+                  ],
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -47,6 +47,7 @@ dependencies:
   file_picker: ^5.5.0
   easy_pdf_viewer: ^1.0.7
   pdf: ^3.10.4
+  intl: ^0.18.1
   
   
 
@@ -54,6 +55,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
+  font_awesome_flutter: ^10.5.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -84,6 +86,7 @@ flutter:
     - assets/images/plumber.png
     - assets/images/carpenter.png
     - assets/images/man.png
+    - assets/images/home.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

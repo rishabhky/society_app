@@ -37,6 +37,7 @@ class _AdminHomeState extends State<AdminHome> {
   Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
   int maintenance = 0;
+  String name = '';
 
   @override
   void initState() {
@@ -83,6 +84,7 @@ class _AdminHomeState extends State<AdminHome> {
           flatNumber = userData['flat'] ?? 0;
           isAdmin = userData['role'] ?? '';
           maintenance = userData['maintenance'] ?? 0;
+          name = userData['name'] ?? '';
         });
         print('User data exists: $userData');
       } else {
@@ -113,6 +115,7 @@ class _AdminHomeState extends State<AdminHome> {
           predefinedAmount: predefinedAmount,
           razorpay: _razorpay,
           flatNumber: flatNumber,
+          name: name,
         ),
       );
     } else if (index == 1) {
@@ -172,7 +175,7 @@ class _AdminHomeState extends State<AdminHome> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: GNav(
-            color: Colors.grey.shade600,
+            color: Colors.grey.shade800,
             activeColor: Colors.white,
             tabBackgroundColor: Colors.grey.shade800,
             gap: 8,

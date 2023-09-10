@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
   int maintenance = 0;
+  String name = '';
 
   @override
   void initState() {
@@ -82,6 +83,7 @@ class _HomePageState extends State<HomePage> {
           flatNumber = userData['flat'] ?? 0;
           isAdmin = userData['role'] ?? '';
           maintenance = userData['maintenance'] ?? 0;
+          name = userData['name'] ?? '';
         });
         print('User data exists: $userData');
       } else {
@@ -111,6 +113,7 @@ class _HomePageState extends State<HomePage> {
         predefinedAmount: predefinedAmount,
         razorpay: _razorpay,
         flatNumber: flatNumber,
+        name: name,
       );
     } else if (index == 1) {
       return NoticeBoardScreen(isAdmin: isAdmin == 'admin');
