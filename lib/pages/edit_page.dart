@@ -26,6 +26,7 @@ class _EditScreenState extends State<EditScreen> {
   late TextEditingController noticeController;
   String? pdfUrl;
   bool hasPdf = false;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -64,6 +65,21 @@ class _EditScreenState extends State<EditScreen> {
           content: Text(e.toString()),
         ),
       );
+    }
+  }
+
+  void addDocumentToCollection(String title, String content) async {
+    try {
+      CollectionReference selectedNotice = firestore.collection('selected');
+
+      await selectedNotice.doc('selected').set({
+        'title': title,
+        'content': content,
+      });
+
+      print('Document added to Firestore successfully.');
+    } catch (e) {
+      print('Error adding document to Firestore: $e');
     }
   }
 
@@ -304,6 +320,18 @@ class _EditScreenState extends State<EditScreen> {
                 );
                 Navigator.of(context).pop();
               },
+            ),
+            SpeedDialChild(
+              backgroundColor: const Color(0xFF1f1d20),
+              child: const Icon(
+                CupertinoIcons.bookmark_fill,
+                color: Colors.grey,
+              ),
+              label: "Display On Home",
+              labelBackgroundColor: Color(0xFF1f1d20),
+              labelStyle: TextStyle(color: Colors.grey),
+              onTap: () => addDocumentToCollection(
+                  titleController.text, noticeController.text),
             )
           ],
           iconTheme:

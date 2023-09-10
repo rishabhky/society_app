@@ -107,8 +107,6 @@ class _AdminHomeState extends State<AdminHome> {
 
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
-      return SafeArea(child: NoticeBoardScreen(isAdmin: true));
-    } else if (index == 1) {
       return SafeArea(
         child: MaintenanceScreen(
           maintenance: maintenance,
@@ -117,6 +115,8 @@ class _AdminHomeState extends State<AdminHome> {
           flatNumber: flatNumber,
         ),
       );
+    } else if (index == 1) {
+      return SafeArea(child: NoticeBoardScreen(isAdmin: true));
     } else if (index == 2) {
       return SafeArea(child: ProfileScreen(username: widget.username));
     } else {
@@ -127,7 +127,7 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFffffff),
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xff4B5350)),
@@ -141,7 +141,7 @@ class _AdminHomeState extends State<AdminHome> {
             },
           ),
         ],
-        backgroundColor: Color(0xFFffffff),
+        backgroundColor: Colors.grey[300],
         title: Center(
           child: GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
@@ -167,31 +167,34 @@ class _AdminHomeState extends State<AdminHome> {
           Expanded(child: _getSelectedScreen(_selectedIndex)),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: GNav(
-          color: Colors.grey.shade600,
-          activeColor: Colors.white,
-          tabBackgroundColor: Color(0xFF1F1D20),
-          gap: 8,
-          padding: EdgeInsets.all(16),
-          tabs: const [
-            GButton(
-              icon: CupertinoIcons.bell,
-              text: 'Notice',
-              textColor: Color(0xffefedec),
-            ),
-            GButton(
-              icon: CupertinoIcons.home,
-              text: 'Maintenance',
-            ),
-            GButton(
-              icon: CupertinoIcons.person_2_fill,
-              text: 'Profile',
-            )
-          ],
-          selectedIndex: _selectedIndex,
-          onTabChange: _onItemTapped,
+      bottomNavigationBar: Container(
+        color: Color(0xFF1F1D20).withOpacity(0.3),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: GNav(
+            color: Colors.grey.shade600,
+            activeColor: Colors.white,
+            tabBackgroundColor: Colors.grey.shade800,
+            gap: 8,
+            padding: EdgeInsets.all(16),
+            tabs: const [
+              GButton(
+                icon: CupertinoIcons.home,
+                text: 'Home',
+                textColor: Color(0xffefedec),
+              ),
+              GButton(
+                icon: CupertinoIcons.bell,
+                text: 'Notices',
+              ),
+              GButton(
+                icon: CupertinoIcons.person_2_fill,
+                text: 'Profile',
+              )
+            ],
+            selectedIndex: _selectedIndex,
+            onTabChange: _onItemTapped,
+          ),
         ),
       ),
       drawer: MyDrawer(

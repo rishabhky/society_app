@@ -80,6 +80,10 @@ flutter:
     - assets/images/login.png
     - assets/images/profile.png
     - assets/images/admin.png
+    - assets/images/electrician.png
+    - assets/images/plumber.png
+    - assets/images/carpenter.png
+    - assets/images/man.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

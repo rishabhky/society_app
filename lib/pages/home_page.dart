@@ -106,14 +106,14 @@ class _HomePageState extends State<HomePage> {
 
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
-      return NoticeBoardScreen(isAdmin: isAdmin == 'admin');
-    } else if (index == 1) {
       return MaintenanceScreen(
         maintenance: maintenance,
         predefinedAmount: predefinedAmount,
         razorpay: _razorpay,
         flatNumber: flatNumber,
       );
+    } else if (index == 1) {
+      return NoticeBoardScreen(isAdmin: isAdmin == 'admin');
     } else if (index == 2) {
       return ProfileScreen(username: widget.username);
     } else {
@@ -158,12 +158,13 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.all(16),
           tabs: const [
             GButton(
-              icon: CupertinoIcons.bell,
-              text: 'Notice',
+              icon: CupertinoIcons.home,
+              text: 'Home',
+              textColor: Color(0xffefedec),
             ),
             GButton(
-              icon: CupertinoIcons.home,
-              text: 'Maintenance',
+              icon: CupertinoIcons.bell,
+              text: 'Notices',
             ),
             GButton(
               icon: CupertinoIcons.person_2_fill,
@@ -273,11 +274,38 @@ class NoticeBoardScreen extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 20,
+            height: 5,
           ),
-          Text(
-            'Notice Screen',
-            style: TextStyle(fontSize: 24, color: Color(0xff0a0b0a)),
+          GlowingOverscrollIndicator(
+            axisDirection: AxisDirection.down,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Notice Board',
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    color: Color(0xff4B5350),
+                    fontWeight: FontWeight.w400,
+                    shadows: [
+                      const Shadow(
+                        offset: Offset(0, 2),
+                        blurRadius: 10,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  CupertinoIcons.doc_on_clipboard,
+                  color: Colors.grey.shade800,
+                )
+              ],
+            ),
           ),
           Expanded(
             child: Container(
