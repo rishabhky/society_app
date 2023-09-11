@@ -199,7 +199,7 @@ class _AdminHomeState extends State<AdminHome> {
                 text: 'Chat',
               ),
               GButton(
-                icon: CupertinoIcons.person_2_fill,
+                icon: CupertinoIcons.person_2,
                 text: 'Profile',
               )
             ],

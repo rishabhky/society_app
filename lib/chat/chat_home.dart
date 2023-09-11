@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vmg/pages/chat_page.dart';
 
 class ChatHome extends StatefulWidget {
@@ -39,23 +41,51 @@ class _ChatHomeState extends State<ChatHome> {
               final userData = users[index].data() as Map<String, dynamic>;
               final userId = users[index].id;
               final userEmail = userData['username'] as String?;
+              final userName = userData['name'] as String;
+              final flat = userData['flat'] as int;
 
               // Exclude the currently logged-in user.
               if (userId != widget.uid && userEmail != null) {
-                return ListTile(
-                  title: Text(userEmail),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatPage(
-                          senderId: widget.uid,
-                          receiverId: userId,
-                          receiverEmail: userEmail,
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 10,
+                              offset: Offset(5, 5))
+                        ],
+                        color: Colors.grey.shade400,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: ListTile(
+                      style: ListTileStyle.list,
+                      title: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          "${userName} - ${flat}",
+                          style: GoogleFonts.poppins(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade800),
                         ),
                       ),
-                    );
-                  },
+                      trailing: Icon(CupertinoIcons.person_fill, size: 30),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                              senderId: widget.uid,
+                              receiverId: userId,
+                              receiverEmail: userEmail,
+                              receiverName: userName,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 );
               } else {
                 // Handle the case where userEmail is null or the same as the logged-in user.
