@@ -10,6 +10,7 @@ import 'package:vmg/pages/Admin_notice.dart';
 import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
 
+import '../chat/chat_home.dart';
 import '../utils/drawer.dart';
 import 'chat_page.dart';
 import 'maintenance.dart';
@@ -121,11 +122,7 @@ class _HomePageState extends State<HomePage> {
     } else if (index == 1) {
       return SafeArea(child: NoticeBoardScreen(isAdmin: true));
     } else if (index == 2) {
-      return SafeArea(
-          child: ChatPage(
-        receiverId: widget.uid,
-        receiverMail: "user@gmail.com",
-      ));
+      return SafeArea(child: ChatHome(uid: widget.uid));
     } else if (index == 3) {
       return SafeArea(child: ProfileScreen(username: widget.username));
     } else {

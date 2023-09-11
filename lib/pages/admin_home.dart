@@ -1,22 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/pages/chat_page.dart';
 import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
 
+import '../chat/chat_home.dart';
 import '../utils/drawer.dart';
 import 'Admin_notice.dart';
 import 'maintenance.dart';
 
 class AdminHome extends StatefulWidget {
   final String username;
-
   final String uid;
   final int initialSelectedScreen;
 
@@ -32,7 +33,6 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
-  String isAdmin = "";
   int flatNumber = 0;
   double predefinedAmount = 100.0; // Replace with your predefined amount
   Razorpay _razorpay = Razorpay();
@@ -83,7 +83,6 @@ class _AdminHomeState extends State<AdminHome> {
         final userData = userSnapshot.data() as Map<String, dynamic>;
         setState(() {
           flatNumber = userData['flat'] ?? 0;
-          isAdmin = userData['role'] ?? '';
           maintenance = userData['maintenance'] ?? 0;
           name = userData['name'] ?? '';
         });
@@ -120,13 +119,11 @@ class _AdminHomeState extends State<AdminHome> {
         ),
       );
     } else if (index == 1) {
-      return SafeArea(child: NoticeBoardScreen(isAdmin: true));
+      return SafeArea(child: NoticeBoardScreen());
     } else if (index == 2) {
       return SafeArea(
-          child: ChatPage(
-        receiverId: widget.uid,
-        receiverMail: "admin@gmail.com",
-      ));
+        child: ChatHome(uid: widget.uid),
+      );
     } else if (index == 3) {
       return SafeArea(child: ProfileScreen(username: widget.username));
     } else {
@@ -224,9 +221,7 @@ class _AdminHomeState extends State<AdminHome> {
 }
 
 class NoticeBoardScreen extends StatelessWidget {
-  final bool isAdmin;
-
-  const NoticeBoardScreen({Key? key, required this.isAdmin}) : super(key: key);
+  const NoticeBoardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -269,92 +264,13 @@ class NoticeBoardScreen extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              child: isAdmin
-                  ? AdminNoticeBoard()
-                  : UserNoticeBoard(
-                      notices: [],
-                    ),
+              child:
+                  AdminNoticeBoard(), // Replace with your notice board widget.
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-class PaymentDialog extends StatelessWidget {
-  final Razorpay _razorpay;
-  final double predefinedAmount;
-
-  PaymentDialog(this._razorpay, this.predefinedAmount);
-
-  final TextEditingController _amountController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        'Maintenance Payment',
-        style: GoogleFonts.poppins(
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-              'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
-          SizedBox(height: 10),
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'Payment Amount'),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () {
-            _startPayment(context);
-          },
-          child: Text('Pay'),
-        ),
-      ],
-    );
-  }
-
-  void _startPayment(BuildContext context) {
-    double paymentAmount = double.tryParse(_amountController.text) ?? 0.0;
-
-    if (paymentAmount <= 0) {
-      // Show an error message
-      Fluttertoast.showToast(
-        msg: "Invalid payment amount",
-        timeInSecForIosWeb: 4,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-      return;
-    }
-
-    // Configure payment options
-    var options = {
-      'key': 'rzp_test_ugZrbmLHkEGjBy',
-      'amount': (paymentAmount * 100).toInt(),
-      'name': 'V.M Grandeur',
-      'subscription_id': 'sub_MSOdGYZ9PmO29d',
-      'description': 'Payment for services',
-      'prefill': {'contact': '', 'email': ''},
-    };
-
-    _razorpay.open(options);
   }
 }
 

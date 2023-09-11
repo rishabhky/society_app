@@ -1,101 +1,153 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vmg/chat/chat_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatPage extends StatefulWidget {
-  final String receiverId;
-  final String receiverMail;
+  final String? senderId;
+  final String? receiverId;
+  final String? receiverEmail;
 
-  const ChatPage(
-      {super.key, required this.receiverId, required this.receiverMail});
+  ChatPage({
+    required this.senderId,
+    required this.receiverId,
+    required this.receiverEmail,
+  });
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final TextEditingController _messagecontroller = TextEditingController();
-  final ChatService _chatService = ChatService();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  void sendMessage() async {
-    if (_messagecontroller.text.isNotEmpty) {
-      await _chatService.sendMessage(
-          widget.receiverId, _messagecontroller.text);
-      _messagecontroller.clear();
-    }
-  }
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final TextEditingController _messageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(children: [
-        Expanded(
-          child: _buildMessageList(),
+    if (widget.senderId == null || widget.receiverId == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Chat Page - Error'),
         ),
-        _buildMessageInput(),
-      ]),
-    );
-  }
+        body: Center(
+          child: Text(
+              'An error occurred. Missing sender or receiver information.'),
+        ),
+      );
+    }
 
-  Widget _buildMessageList() {
-    return StreamBuilder(
-      stream: _chatService.getMessages(
-          widget.receiverId, _firebaseAuth.currentUser!.uid),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text("Error${snapshot.error}");
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text("Loading ...");
-        }
-
-        return ListView(
-          children: snapshot.data!.docs
-              .map((document) => _buildMessageItem(document))
-              .toList(),
-        );
-      },
-    );
-  }
-
-  Widget _buildMessageItem(DocumentSnapshot document) {
-    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-    var alignment = (data['sendId'] == _firebaseAuth.currentUser!.uid)
-        ? Alignment.centerRight
-        : Alignment.centerLeft;
-
-    return Container(
-      alignment: alignment,
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chat with ${widget.receiverEmail ?? "Unknown User"}'),
+      ),
+      body: Column(
         children: [
-          Text(data['senderEmail']),
-          Text(data['message']),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('chat_messages')
+                  .doc(getChatRoomId())
+                  .collection('messages')
+                  .orderBy('timestamp', descending: false)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  // Handle Firestore error here.
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(child: Text('No messages.'));
+                }
+
+                final messages = snapshot.data!.docs;
+                return ListView.builder(
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final messageData =
+                        messages[index].data() as Map<String, dynamic>;
+                    final messageText = messageData['message'] as String;
+                    final senderId = messageData['senderId'] as String;
+                    final isSender = senderId == widget.senderId;
+
+                    return ListTile(
+                      title: Text(
+                        messageText,
+                        textAlign: isSender ? TextAlign.right : TextAlign.left,
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: 'Type your message...',
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    final messageText = _messageController.text.trim();
+                    if (messageText.isNotEmpty) {
+                      sendMessage(messageText);
+                      _messageController.clear();
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMessageInput() {
-    return Row(
-      children: [
-        Expanded(
-            child: TextField(
-          controller: _messagecontroller,
-          obscureText: false,
-          decoration: InputDecoration(
-            hintText: 'Enter message',
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.all(16),
-          ),
-        )),
-        IconButton(
-            onPressed: sendMessage,
-            icon: Icon(CupertinoIcons.arrow_right_circle_fill))
-      ],
-    );
+  String getChatRoomId() {
+    if (widget.senderId == null || widget.receiverId == null) {
+      return ''; // Return an empty string or handle this case appropriately.
+    }
+    // Generate a chat room ID based on sender and receiver IDs.
+    final List<String> ids = [widget.senderId!, widget.receiverId!];
+    ids.sort();
+    return ids.join('_');
+  }
+
+  Future<void> sendMessage(String messageText) async {
+    if (widget.senderId == null || widget.receiverId == null) {
+      // Handle the case where senderId or receiverId is null.
+      return;
+    }
+
+    final Timestamp timestamp = Timestamp.now();
+
+    // Generate the chat room ID
+    final chatRoomId = getChatRoomId();
+
+    final messageData = {
+      'message': messageText,
+      'senderId': widget.senderId!,
+      'receiverId': widget.receiverId!,
+      'timestamp': timestamp,
+    };
+
+    // Specify the chat room ID as the document ID when adding the message to the collection
+    await _firestore
+        .collection('chat_messages')
+        .doc(chatRoomId)
+        .collection('messages')
+        .add(messageData);
   }
 }
