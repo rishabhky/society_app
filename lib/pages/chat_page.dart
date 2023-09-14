@@ -42,6 +42,14 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: Icon(
+            Icons
+                .arrow_back_ios, // You can change this to any other icon you prefer
+            color: Colors.white60,
+          ),
+        ),
         iconTheme: IconThemeData(color: Colors.white60),
         backgroundColor: Colors.transparent,
         elevation: 0,

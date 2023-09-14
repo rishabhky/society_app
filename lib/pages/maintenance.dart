@@ -6,6 +6,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/utils/mybutton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import '../utils/routes.dart';
 import 'admin_home.dart';
 import 'home_page.dart';
 
@@ -15,14 +16,15 @@ class MaintenanceScreen extends StatefulWidget {
   final Razorpay razorpay;
   final int flatNumber;
   final String name;
+  final String isAdmin;
 
-  MaintenanceScreen({
-    required this.maintenance,
-    required this.predefinedAmount,
-    required this.razorpay,
-    required this.flatNumber,
-    required this.name,
-  });
+  MaintenanceScreen(
+      {required this.maintenance,
+      required this.predefinedAmount,
+      required this.razorpay,
+      required this.flatNumber,
+      required this.name,
+      required this.isAdmin});
 
   @override
   State<MaintenanceScreen> createState() => _MaintenanceScreenState();
@@ -97,16 +99,24 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   children: [
                     MyButton(
                         iconPath: "assets/images/electrician.png",
-                        buttonText: "Electrician"),
+                        buttonText: "Electrician",
+                        isAdmin: widget.isAdmin,
+                        documentId: 'electrician'),
                     MyButton(
                         iconPath: "assets/images/plumber.png",
-                        buttonText: "Plumber"),
+                        buttonText: "Plumber",
+                        isAdmin: widget.isAdmin,
+                        documentId: 'plumber'),
                     MyButton(
-                        iconPath: "assets/images/carpenter.png",
-                        buttonText: "Carpenter"),
+                        iconPath: "assets/images/security.png",
+                        buttonText: "Security",
+                        isAdmin: widget.isAdmin,
+                        documentId: 'security'),
                     MyButton(
                         iconPath: "assets/images/man.png",
-                        buttonText: "Caretaker"),
+                        buttonText: "Caretaker",
+                        isAdmin: widget.isAdmin,
+                        documentId: 'caretaker'),
                   ],
                 ),
                 SizedBox(

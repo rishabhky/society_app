@@ -86,6 +86,7 @@ class _HomePageState extends State<HomePage> {
           isAdmin = userData['role'] ?? '';
           maintenance = userData['maintenance'] ?? 0;
           name = userData['name'] ?? '';
+          // isAdmin=userData['role']??'';
         });
         print('User data exists: $userData');
       } else {
@@ -117,6 +118,7 @@ class _HomePageState extends State<HomePage> {
           razorpay: _razorpay,
           flatNumber: flatNumber,
           name: name,
+          isAdmin: isAdmin,
         ),
       );
     } else if (index == 1) {

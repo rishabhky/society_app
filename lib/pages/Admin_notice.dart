@@ -186,10 +186,14 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
+                              SizedBox(
+                                height: 5,
+                              ),
                               Text(
                                 noticeText ?? '',
+                                textAlign: TextAlign.justify,
                                 style: GoogleFonts.ubuntu(
-                                    color: Colors.black45, fontSize: 15),
+                                    color: Colors.black54, fontSize: 15),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -243,6 +247,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                                 fontSize: 19,
                                 fontWeight: FontWeight.w700),
                           ),
+
                           // trailing: // Align icons vertically centered
 
                           //     IconButton(

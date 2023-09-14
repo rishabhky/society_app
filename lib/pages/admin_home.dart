@@ -39,6 +39,7 @@ class _AdminHomeState extends State<AdminHome> {
   int _selectedIndex = 0;
   int maintenance = 0;
   String name = '';
+  String isAdmin = '';
 
   @override
   void initState() {
@@ -85,6 +86,7 @@ class _AdminHomeState extends State<AdminHome> {
           flatNumber = userData['flat'] ?? 0;
           maintenance = userData['maintenance'] ?? 0;
           name = userData['name'] ?? '';
+          isAdmin = userData['role'] ?? '';
         });
         print('User data exists: $userData');
       } else {
@@ -116,6 +118,7 @@ class _AdminHomeState extends State<AdminHome> {
           razorpay: _razorpay,
           flatNumber: flatNumber,
           name: name,
+          isAdmin: isAdmin,
         ),
       );
     } else if (index == 1) {
@@ -174,38 +177,35 @@ class _AdminHomeState extends State<AdminHome> {
           Expanded(child: _getSelectedScreen(_selectedIndex)),
         ],
       ),
-      bottomNavigationBar: Container(
-        color: Color(0xFF1F1D20).withOpacity(0.3),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: GNav(
-            color: Colors.grey.shade800,
-            activeColor: Colors.white,
-            tabBackgroundColor: Colors.grey.shade800,
-            gap: 8,
-            padding: EdgeInsets.all(16),
-            tabs: const [
-              GButton(
-                icon: CupertinoIcons.home,
-                text: 'Home',
-                textColor: Color(0xffefedec),
-              ),
-              GButton(
-                icon: CupertinoIcons.bell,
-                text: 'Notices',
-              ),
-              GButton(
-                icon: CupertinoIcons.chat_bubble_2,
-                text: 'Chat',
-              ),
-              GButton(
-                icon: CupertinoIcons.person_2,
-                text: 'Profile',
-              )
-            ],
-            selectedIndex: _selectedIndex,
-            onTabChange: _onItemTapped,
-          ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: GNav(
+          color: Colors.grey.shade800,
+          activeColor: Colors.white,
+          tabBackgroundColor: Colors.grey.shade800,
+          gap: 8,
+          padding: EdgeInsets.all(16),
+          tabs: const [
+            GButton(
+              icon: CupertinoIcons.home,
+              text: 'Home',
+              textColor: Color(0xffefedec),
+            ),
+            GButton(
+              icon: CupertinoIcons.bell,
+              text: 'Notices',
+            ),
+            GButton(
+              icon: CupertinoIcons.chat_bubble_2,
+              text: 'Chat',
+            ),
+            GButton(
+              icon: CupertinoIcons.person_2,
+              text: 'Profile',
+            )
+          ],
+          selectedIndex: _selectedIndex,
+          onTabChange: _onItemTapped,
         ),
       ),
       drawer: MyDrawer(
