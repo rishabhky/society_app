@@ -118,7 +118,7 @@ class _AdminHomeState extends State<AdminHome> {
           razorpay: _razorpay,
           flatNumber: flatNumber,
           name: name,
-          isAdmin: isAdmin,
+          isAdmin: 'admin',
         ),
       );
     } else if (index == 1) {

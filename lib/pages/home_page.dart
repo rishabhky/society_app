@@ -118,11 +118,11 @@ class _HomePageState extends State<HomePage> {
           razorpay: _razorpay,
           flatNumber: flatNumber,
           name: name,
-          isAdmin: isAdmin,
+          isAdmin: 'user',
         ),
       );
     } else if (index == 1) {
-      return SafeArea(child: NoticeBoardScreen(isAdmin: true));
+      return SafeArea(child: NoticeBoardScreen(isAdmin: false));
     } else if (index == 2) {
       return SafeArea(child: ChatHome(uid: widget.uid));
     } else if (index == 3) {

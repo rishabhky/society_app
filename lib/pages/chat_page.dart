@@ -42,24 +42,14 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white60,
-          ),
-        ),
         iconTheme: IconThemeData(color: Colors.white60),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          widget.receiverName ?? "Unknown User",
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            color: Colors.white60,
-          ),
-        ),
+        title: Text('${widget.receiverName ?? "Unknown User"}',
+            style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Colors.white60)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -113,18 +103,19 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Flexible(
                               child: Container(
-                                padding: EdgeInsets.all(10.0),
+                                padding: EdgeInsets.all(
+                                    10.0), // Adjust padding as needed
                                 decoration: BoxDecoration(
                                   color: backgroundColor,
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(
+                                      10.0), // Make it circular
                                 ),
                                 child: Text(
                                   messageText,
                                   style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500),
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -146,17 +137,15 @@ class _ChatPageState extends State<ChatPage> {
                       style: GoogleFonts.poppins(color: Colors.white54),
                       controller: _messageController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey.shade800,
-                        contentPadding: EdgeInsets.all(16),
-                        hintText: 'Type your message...',
-                        hintStyle:
-                            GoogleFonts.poppins(color: Colors.grey.shade700),
-                      ),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10)),
+                          filled: true,
+                          fillColor: Colors.grey.shade800,
+                          contentPadding: EdgeInsets.all(16),
+                          hintText: 'Type your message...',
+                          hintStyle:
+                              GoogleFonts.poppins(color: Colors.grey.shade700)),
                     ),
                   ),
                   IconButton(
