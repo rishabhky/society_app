@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
         child: GNav(
           color: Colors.grey.shade600,
           activeColor: Colors.white,
-          tabBackgroundColor: const Color(0xFF1F1D20),
+          tabBackgroundColor: Colors.grey.shade800,
           gap: 8,
           padding: const EdgeInsets.all(16),
           tabs: const [
@@ -212,10 +212,8 @@ class PaymentDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Obx(
-            () => Text(
-                'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
-          ),
+          Text(
+              'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
           const SizedBox(height: 10),
           TextField(
             controller: _amountController,
@@ -343,148 +341,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
-// class MyDrawer extends StatelessWidget {
-//   final String username;
-//   final int initialSelectedScreen; // Updated property
-//   final double predefinedAmount;
-//   final Razorpay razorpay;
-//   final int flatNumber;
-//   final String uid;
-
-//   const MyDrawer({
-//     required this.username,
-//     required this.initialSelectedScreen,
-//     required this.predefinedAmount,
-//     required this.razorpay,
-//     required this.flatNumber,
-//     required this.uid,
-//     Key? key,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Drawer(
-//       backgroundColor: Colors.black.withOpacity(0.85),
-//       child: ListView(
-//         padding: EdgeInsets.zero,
-//         children: [
-//           DrawerHeader(
-//             child: Column(
-//               children: [
-//                 CircleAvatar(
-//                   radius: 40,
-//                   backgroundImage: AssetImage('assets/images/profile.png'),
-//                 ),
-//                 const SizedBox(
-//                   height: 10,
-//                 ),
-//                 Text(
-//                   "Hello $username!",
-//                   textAlign: TextAlign.center,
-//                   style: const TextStyle(
-//                     color: Colors.white,
-//                     fontSize: 24,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           customListItem(
-//             leading: CupertinoIcons.news,
-//             title: "Notices",
-//             currentIndex: 0,
-//             onTap: () {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => HomePage(
-//                       username: username,
-//                       uid: uid,
-//                       initialSelectedScreen: 0), // Updated index to 0
-//                 ),
-//               );
-//             },
-//           ),
-//           customListItem(
-//             leading: CupertinoIcons.money_dollar,
-//             title: "Maintenance",
-//             currentIndex: 1,
-//             onTap: () {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => HomePage(
-//                       username: username,
-//                       uid: uid,
-//                       initialSelectedScreen: 1), // Updated index to 0
-//                 ),
-//               );
-//             },
-//           ),
-//           customListItem(
-//             leading: CupertinoIcons.person,
-//             title: "Profile",
-//             currentIndex: 2,
-//             onTap: () {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => HomePage(
-//                       username: username,
-//                       uid: uid,
-//                       initialSelectedScreen: 2), // Updated index to 0
-//                 ),
-//               );
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget customListItem({
-//     required IconData leading,
-//     required String title,
-//     required int currentIndex,
-//     required VoidCallback onTap,
-//   }) {
-//     return InkWell(
-//       onTap: onTap,
-//       child: Ink(
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.only(
-//             topRight: Radius.circular(30),
-//             bottomRight: Radius.circular(30),
-//             topLeft: Radius.circular(30),
-//             bottomLeft: Radius.circular(30),
-//           ),
-//           color: currentIndex == initialSelectedScreen
-//               ? Color(0xFF1f1d20).withOpacity(0.85)
-//               : Colors.transparent,
-//         ),
-//         child: Padding(
-//           padding: const EdgeInsets.symmetric(horizontal: 50.0),
-//           child: ListTile(
-//             leading: Icon(
-//               leading,
-//               color: Colors.white,
-//             ),
-//             title: Text(
-//               title,
-//               textAlign: TextAlign.center,
-//               style: GoogleFonts.ubuntu(
-//                 fontSize: 17,
-//                 color: currentIndex == initialSelectedScreen
-//                     ? Colors.white
-//                     : Colors.grey, // Set text color
-//               ),
-//             ),
-//             onTap: onTap,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

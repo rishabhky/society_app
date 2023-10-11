@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vmg/controllers/auth_controller.dart';
 import 'package:vmg/pages/chat_page.dart';
 
 class ChatHome extends StatefulWidget {
@@ -17,6 +19,7 @@ class ChatHome extends StatefulWidget {
 class _ChatHomeState extends State<ChatHome> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,8 @@ class _ChatHomeState extends State<ChatHome> {
               final userName = userData['name'] as String;
 
               // Exclude the currently logged-in user.
-              if (userId != widget.uid && userEmail != null) {
+              if (userId != authController.userid.value.trim() &&
+                  userEmail != null) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(

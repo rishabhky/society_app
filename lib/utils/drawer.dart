@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:vmg/controllers/auth_controller.dart';
 
 import '../pages/admin_home.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends StatefulWidget {
   final String username;
   final int initialSelectedScreen; // Updated property
   final double predefinedAmount;
@@ -22,6 +24,13 @@ class MyDrawer extends StatelessWidget {
     required this.uid,
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<MyDrawer> createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
+  final AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -41,45 +50,61 @@ class MyDrawer extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  "Hello $username!",
+                  "Hello ${authController.name.value}",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: GoogleFonts.nunitoSans(
+                    color: Colors.white60,
                     fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
           customListItem(
-            leading: CupertinoIcons.news,
-            title: "Notices",
+            leading: CupertinoIcons.home,
+            title: "Home",
             currentIndex: 0,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
+                      username: widget.username,
+                      uid: widget.uid,
                       initialSelectedScreen: 0), // Updated index to 0
                 ),
               );
             },
           ),
           customListItem(
-            leading: CupertinoIcons.money_dollar,
-            title: "Maintenance",
+            leading: CupertinoIcons.news,
+            title: "Notices",
             currentIndex: 1,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
+                      username: widget.username,
+                      uid: widget.uid,
                       initialSelectedScreen: 1), // Updated index to 0
+                ),
+              );
+            },
+          ),
+          customListItem(
+            leading: CupertinoIcons.chat_bubble_2,
+            title: "Chat",
+            currentIndex: 1,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminHome(
+                      username: widget.username,
+                      uid: widget.uid,
+                      initialSelectedScreen: 2), // Updated index to 0
                 ),
               );
             },
@@ -93,8 +118,8 @@ class MyDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
+                      username: widget.username,
+                      uid: widget.uid,
                       initialSelectedScreen: 2), // Updated index to 0
                 ),
               );
@@ -121,7 +146,7 @@ class MyDrawer extends StatelessWidget {
             topLeft: Radius.circular(30),
             bottomLeft: Radius.circular(30),
           ),
-          color: currentIndex == initialSelectedScreen
+          color: currentIndex == widget.initialSelectedScreen
               ? const Color(0xFF1f1d20).withOpacity(0.85)
               : Colors.transparent,
         ),
@@ -137,7 +162,7 @@ class MyDrawer extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.ubuntu(
                 fontSize: 17,
-                color: currentIndex == initialSelectedScreen
+                color: currentIndex == widget.initialSelectedScreen
                     ? Colors.white
                     : Colors.grey, // Set text color
               ),

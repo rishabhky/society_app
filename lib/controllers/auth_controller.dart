@@ -11,6 +11,7 @@ class AuthController extends GetxController {
   Razorpay razorpay = Razorpay();
   RxInt flatNumber = 0.obs;
   RxString name = ''.obs;
+  RxString userid = ''.obs;
   RxBool isInitialized = false.obs;
   RxString isAdmin = ''.obs;
 
@@ -37,6 +38,7 @@ class AuthController extends GetxController {
     flatNumber.value = 0;
     name.value = '';
     isAdmin.value = 'user';
+    userid.value = '';
   }
 
   Future<void> initializeFirebase() async {
@@ -65,6 +67,7 @@ class AuthController extends GetxController {
           maintenance.value =
               (userData['maintenance'] ?? 0.0).toDouble(); // Convert to double
           name.value = userData['name'] ?? '';
+          userid.value = userData['uid'] ?? '';
           isAdmin.value = userData['role'] ?? '';
         }
       }

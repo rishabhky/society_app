@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vmg/controllers/auth_controller.dart';
 
 class ChatPage extends StatefulWidget {
   final String? senderId;
@@ -11,7 +13,8 @@ class ChatPage extends StatefulWidget {
   final String? receiverName;
 
   const ChatPage(
-      {super.key, required this.senderId,
+      {super.key,
+      required this.senderId,
       required this.receiverId,
       required this.receiverEmail,
       required this.receiverName});
@@ -24,6 +27,7 @@ class _ChatPageState extends State<ChatPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _messageController = TextEditingController();
+  final AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +89,7 @@ class _ChatPageState extends State<ChatPage> {
                           messages[index].data() as Map<String, dynamic>;
                       final messageText = messageData['message'] as String;
                       final senderId = messageData['senderId'] as String;
-                      final isSender = senderId == widget.senderId;
+                      final isSender = senderId == authController.userid.value;
 
                       // Set background color and alignment based on sender
                       final backgroundColor =
@@ -152,7 +156,9 @@ class _ChatPageState extends State<ChatPage> {
                     icon: Icon(
                       CupertinoIcons.arrow_right,
                       size: 30,
-                      shadows: const [Shadow(color: Colors.white54, blurRadius: 5)],
+                      shadows: const [
+                        Shadow(color: Colors.white54, blurRadius: 5)
+                      ],
                       color: Colors.grey.shade600,
                     ),
                     onPressed: () {
@@ -177,8 +183,12 @@ class _ChatPageState extends State<ChatPage> {
       return ''; // Return an empty string or handle this case appropriately.
     }
     // Generate a chat room ID based on sender and receiver IDs.
-    final List<String> ids = [widget.senderId!, widget.receiverId!];
+    final List<String> ids = [
+      authController.userid.value.trim(),
+      widget.receiverId!
+    ];
     ids.sort();
+
     return ids.join('_');
   }
 

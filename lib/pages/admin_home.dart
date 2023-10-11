@@ -38,6 +38,7 @@ class _AdminHomeState extends State<AdminHome> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialSelectedScreen;
+    authController.fetchUserData();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
