@@ -10,7 +10,7 @@ import '../utils/colors.dart';
 class UserNoticeBoard extends StatefulWidget {
   final List<String> notices;
 
-  UserNoticeBoard({required this.notices});
+  const UserNoticeBoard({super.key, required this.notices});
 
   @override
   State<UserNoticeBoard> createState() => _UserNoticeBoardState();
@@ -77,13 +77,13 @@ class _UserNoticeBoardState extends State<UserNoticeBoard> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
             stream: noticesStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
 
               if (snapshot.hasError) {
@@ -107,13 +107,13 @@ class _UserNoticeBoardState extends State<UserNoticeBoard> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      margin: EdgeInsets.all(7),
+                      margin: const EdgeInsets.all(7),
                       elevation: 5,
                       surfaceTintColor: Colors.white,
                       shadowColor: Colors.white,
                       color: getRandomColor(),
                       child: ListTile(
-                        contentPadding: EdgeInsets.all(10),
+                        contentPadding: const EdgeInsets.all(10),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -150,7 +150,7 @@ class _UserNoticeBoardState extends State<UserNoticeBoard> {
                                           }
                                         },
                                       )
-                                    : SizedBox(
+                                    : const SizedBox(
                                         width: 0,
                                       ),
                               ],

@@ -33,7 +33,7 @@ class MyDrawer extends StatelessWidget {
           DrawerHeader(
             child: Column(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 40,
                   backgroundImage: AssetImage('assets/images/profile.png'),
                 ),
@@ -122,7 +122,7 @@ class MyDrawer extends StatelessWidget {
             bottomLeft: Radius.circular(30),
           ),
           color: currentIndex == initialSelectedScreen
-              ? Color(0xFF1f1d20).withOpacity(0.85)
+              ? const Color(0xFF1f1d20).withOpacity(0.85)
               : Colors.transparent,
         ),
         child: Padding(

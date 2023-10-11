@@ -48,6 +48,7 @@ dependencies:
   easy_pdf_viewer: ^1.0.7
   pdf: ^3.10.4
   intl: ^0.18.1
+  get: ^4.6.6
   
   
 

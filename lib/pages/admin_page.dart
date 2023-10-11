@@ -59,7 +59,7 @@ class _AdminpageState extends State<Adminpage> {
           _showErrorDialog("User data not found or is null.");
         }
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       _showErrorDialog("An error occurred. Please try again.");
     } finally {
       setState(() {
@@ -73,14 +73,14 @@ class _AdminpageState extends State<Adminpage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Access Denied'),
+          title: const Text('Access Denied'),
           content: Text(errorMessage),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -93,14 +93,14 @@ class _AdminpageState extends State<Adminpage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Error'),
+          title: const Text('Error'),
           content: Text(errorMessage),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -181,23 +181,10 @@ class _AdminpageState extends State<Adminpage> {
                       InkWell(
                         onTap: signIn,
                         child: AnimatedContainer(
-                          duration: Duration(seconds: 1),
+                          duration: const Duration(seconds: 1),
                           width: changeLoginButton ? 50 : 100,
                           height: 40,
                           alignment: Alignment.center,
-                          child: changeLoginButton
-                              ? const Icon(
-                                  Icons.done,
-                                  color: Colors.white,
-                                )
-                              : Text(
-                                  "Login",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(
@@ -205,11 +192,24 @@ class _AdminpageState extends State<Adminpage> {
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
-                                offset: Offset(0, 2),
+                                offset: const Offset(0, 2),
                                 blurRadius: 4,
                               ),
                             ],
                           ),
+                          child: changeLoginButton
+                              ? const Icon(
+                                  Icons.done,
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  "Login",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
                         ),
                       ),
                       const SizedBox(

@@ -9,42 +9,38 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/pages/Admin_notice.dart';
 import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
-
 import '../chat/chat_home.dart';
 import '../utils/drawer.dart';
-import 'chat_page.dart';
 import 'maintenance.dart';
+import 'package:get/get.dart';
+import 'package:vmg/controllers/auth_controller.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
   final String uid;
   final int initialSelectedScreen;
 
-  HomePage(
-      {required this.username,
-      required this.uid,
-      required this.initialSelectedScreen,
-      Key? key})
-      : super(key: key);
+  const HomePage({
+    required this.username,
+    required this.uid,
+    required this.initialSelectedScreen,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int flatNumber = 0;
-  String isAdmin = "";
-  double predefinedAmount = 100.0; // Replace with your predefined amount
+  final AuthController authController = Get.find();
   Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
-  int maintenance = 0;
-  String name = '';
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initialSelectedScreen;
-    fetchUserData();
+    authController.fetchUserData();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -72,30 +68,29 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> fetchUserData() async {
-    try {
-      final userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .get();
+  // Future<void> fetchUserData() async {
+  //   try {
+  //     final userSnapshot = await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(widget.uid)
+  //         .get();
 
-      if (userSnapshot.exists) {
-        final userData = userSnapshot.data() as Map<String, dynamic>;
-        setState(() {
-          flatNumber = userData['flat'] ?? 0;
-          isAdmin = userData['role'] ?? '';
-          maintenance = userData['maintenance'] ?? 0;
-          name = userData['name'] ?? '';
-          // isAdmin=userData['role']??'';
-        });
-        print('User data exists: $userData');
-      } else {
-        print("No such user");
-      }
-    } catch (e) {
-      print('Error fetching user data: $e');
-    }
-  }
+  //     if (userSnapshot.exists) {
+  //       final userData = userSnapshot.data() as Map<String, dynamic>;
+  //       setState(() {
+  //         flatNumber = userData['flat'] ?? 0;
+  //         isAdmin = userData['role'] ?? '';
+  //         maintenance = userData['maintenance'] ?? 0;
+  //         name = userData['name'] ?? '';
+  //       });
+  //       print('User data exists: $userData');
+  //     } else {
+  //       print("No such user");
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching user data: $e');
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -111,22 +106,16 @@ class _HomePageState extends State<HomePage> {
 
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
-      return SafeArea(
-        child: MaintenanceScreen(
-          maintenance: maintenance,
-          predefinedAmount: predefinedAmount,
-          razorpay: _razorpay,
-          flatNumber: flatNumber,
-          name: name,
-          isAdmin: 'user',
-        ),
+      return const SafeArea(
+        child: MaintenanceScreen(),
       );
     } else if (index == 1) {
-      return SafeArea(child: NoticeBoardScreen(isAdmin: false));
+      return const SafeArea(child: NoticeBoardScreen(isAdmin: false));
     } else if (index == 2) {
       return SafeArea(child: ChatHome(uid: widget.uid));
     } else if (index == 3) {
-      return SafeArea(child: ProfileScreen(username: widget.username));
+      return SafeArea(
+          child: ProfileScreen(username: authController.name.value));
     } else {
       return Container();
     }
@@ -135,21 +124,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFffffff),
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
         elevation: 0,
-        iconTheme: IconThemeData(color: Color(0xff4B5350)),
+        iconTheme: const IconThemeData(color: Color(0xff4B5350)),
         actions: [
           IconButton(
             icon: const Icon(Icons.login),
-            color: Color(0xff4B5350),
+            color: const Color(0xff4B5350),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacementNamed(context, MyRoutes.loginRoute);
             },
           ),
         ],
-        backgroundColor: Color(0xFFffffff),
+        backgroundColor: Colors.grey.shade300,
         title: const Center(
           child: Text(
             "Home",
@@ -164,9 +153,9 @@ class _HomePageState extends State<HomePage> {
         child: GNav(
           color: Colors.grey.shade600,
           activeColor: Colors.white,
-          tabBackgroundColor: Color(0xFF1F1D20),
+          tabBackgroundColor: const Color(0xFF1F1D20),
           gap: 8,
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           tabs: const [
             GButton(
               icon: CupertinoIcons.home,
@@ -193,9 +182,9 @@ class _HomePageState extends State<HomePage> {
       drawer: MyDrawer(
         initialSelectedScreen: _selectedIndex,
         username: widget.username,
-        predefinedAmount: predefinedAmount,
+        predefinedAmount: authController.predefinedAmount.value,
         razorpay: _razorpay,
-        flatNumber: flatNumber,
+        flatNumber: authController.flatNumber.value,
         uid: widget.uid,
       ),
     );
@@ -206,7 +195,7 @@ class PaymentDialog extends StatelessWidget {
   final Razorpay _razorpay;
   final double predefinedAmount;
 
-  PaymentDialog(this._razorpay, this.predefinedAmount);
+  PaymentDialog(this._razorpay, this.predefinedAmount, {super.key});
 
   final TextEditingController _amountController = TextEditingController();
 
@@ -223,13 +212,15 @@ class PaymentDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-              'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
-          SizedBox(height: 10),
+          Obx(
+            () => Text(
+                'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
+          ),
+          const SizedBox(height: 10),
           TextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'Payment Amount'),
+            decoration: const InputDecoration(labelText: 'Payment Amount'),
           ),
         ],
       ),
@@ -238,13 +229,13 @@ class PaymentDialog extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
             _startPayment(context);
           },
-          child: Text('Pay'),
+          child: const Text('Pay'),
         ),
       ],
     );
@@ -288,7 +279,7 @@ class NoticeBoardScreen extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           GlowingOverscrollIndicator(
@@ -301,7 +292,7 @@ class NoticeBoardScreen extends StatelessWidget {
                   'Notice Board',
                   style: GoogleFonts.poppins(
                     fontSize: 24,
-                    color: Color(0xff4B5350),
+                    color: const Color(0xff4B5350),
                     fontWeight: FontWeight.w400,
                     shadows: [
                       const Shadow(
@@ -312,7 +303,7 @@ class NoticeBoardScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
                 Icon(
@@ -325,8 +316,8 @@ class NoticeBoardScreen extends StatelessWidget {
           Expanded(
             child: Container(
               child: isAdmin
-                  ? AdminNoticeBoard()
-                  : UserNoticeBoard(
+                  ? const AdminNoticeBoard()
+                  : const UserNoticeBoard(
                       notices: [],
                     ),
             ),
@@ -340,160 +331,160 @@ class NoticeBoardScreen extends StatelessWidget {
 class ProfileScreen extends StatelessWidget {
   final String username;
 
-  ProfileScreen({required this.username});
+  const ProfileScreen({super.key, required this.username});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
         'Profile Screen\nUsername: $username',
-        style: TextStyle(fontSize: 24),
+        style: const TextStyle(fontSize: 24),
       ),
     );
   }
 }
 
-class MyDrawer extends StatelessWidget {
-  final String username;
-  final int initialSelectedScreen; // Updated property
-  final double predefinedAmount;
-  final Razorpay razorpay;
-  final int flatNumber;
-  final String uid;
+// class MyDrawer extends StatelessWidget {
+//   final String username;
+//   final int initialSelectedScreen; // Updated property
+//   final double predefinedAmount;
+//   final Razorpay razorpay;
+//   final int flatNumber;
+//   final String uid;
 
-  const MyDrawer({
-    required this.username,
-    required this.initialSelectedScreen,
-    required this.predefinedAmount,
-    required this.razorpay,
-    required this.flatNumber,
-    required this.uid,
-    Key? key,
-  }) : super(key: key);
+//   const MyDrawer({
+//     required this.username,
+//     required this.initialSelectedScreen,
+//     required this.predefinedAmount,
+//     required this.razorpay,
+//     required this.flatNumber,
+//     required this.uid,
+//     Key? key,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: Colors.black.withOpacity(0.85),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage('assets/images/profile.png'),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Hello $username!",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          customListItem(
-            leading: CupertinoIcons.news,
-            title: "Notices",
-            currentIndex: 0,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 0), // Updated index to 0
-                ),
-              );
-            },
-          ),
-          customListItem(
-            leading: CupertinoIcons.money_dollar,
-            title: "Maintenance",
-            currentIndex: 1,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 1), // Updated index to 0
-                ),
-              );
-            },
-          ),
-          customListItem(
-            leading: CupertinoIcons.person,
-            title: "Profile",
-            currentIndex: 2,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 2), // Updated index to 0
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Drawer(
+//       backgroundColor: Colors.black.withOpacity(0.85),
+//       child: ListView(
+//         padding: EdgeInsets.zero,
+//         children: [
+//           DrawerHeader(
+//             child: Column(
+//               children: [
+//                 CircleAvatar(
+//                   radius: 40,
+//                   backgroundImage: AssetImage('assets/images/profile.png'),
+//                 ),
+//                 const SizedBox(
+//                   height: 10,
+//                 ),
+//                 Text(
+//                   "Hello $username!",
+//                   textAlign: TextAlign.center,
+//                   style: const TextStyle(
+//                     color: Colors.white,
+//                     fontSize: 24,
+//                     fontWeight: FontWeight.bold,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           customListItem(
+//             leading: CupertinoIcons.news,
+//             title: "Notices",
+//             currentIndex: 0,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => HomePage(
+//                       username: username,
+//                       uid: uid,
+//                       initialSelectedScreen: 0), // Updated index to 0
+//                 ),
+//               );
+//             },
+//           ),
+//           customListItem(
+//             leading: CupertinoIcons.money_dollar,
+//             title: "Maintenance",
+//             currentIndex: 1,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => HomePage(
+//                       username: username,
+//                       uid: uid,
+//                       initialSelectedScreen: 1), // Updated index to 0
+//                 ),
+//               );
+//             },
+//           ),
+//           customListItem(
+//             leading: CupertinoIcons.person,
+//             title: "Profile",
+//             currentIndex: 2,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => HomePage(
+//                       username: username,
+//                       uid: uid,
+//                       initialSelectedScreen: 2), // Updated index to 0
+//                 ),
+//               );
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 
-  Widget customListItem({
-    required IconData leading,
-    required String title,
-    required int currentIndex,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-            topLeft: Radius.circular(30),
-            bottomLeft: Radius.circular(30),
-          ),
-          color: currentIndex == initialSelectedScreen
-              ? Color(0xFF1f1d20).withOpacity(0.85)
-              : Colors.transparent,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: ListTile(
-            leading: Icon(
-              leading,
-              color: Colors.white,
-            ),
-            title: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(
-                fontSize: 17,
-                color: currentIndex == initialSelectedScreen
-                    ? Colors.white
-                    : Colors.grey, // Set text color
-              ),
-            ),
-            onTap: onTap,
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   Widget customListItem({
+//     required IconData leading,
+//     required String title,
+//     required int currentIndex,
+//     required VoidCallback onTap,
+//   }) {
+//     return InkWell(
+//       onTap: onTap,
+//       child: Ink(
+//         decoration: BoxDecoration(
+//           borderRadius: BorderRadius.only(
+//             topRight: Radius.circular(30),
+//             bottomRight: Radius.circular(30),
+//             topLeft: Radius.circular(30),
+//             bottomLeft: Radius.circular(30),
+//           ),
+//           color: currentIndex == initialSelectedScreen
+//               ? Color(0xFF1f1d20).withOpacity(0.85)
+//               : Colors.transparent,
+//         ),
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 50.0),
+//           child: ListTile(
+//             leading: Icon(
+//               leading,
+//               color: Colors.white,
+//             ),
+//             title: Text(
+//               title,
+//               textAlign: TextAlign.center,
+//               style: GoogleFonts.ubuntu(
+//                 fontSize: 17,
+//                 color: currentIndex == initialSelectedScreen
+//                     ? Colors.white
+//                     : Colors.grey, // Set text color
+//               ),
+//             ),
+//             onTap: onTap,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

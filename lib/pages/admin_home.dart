@@ -1,27 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:vmg/pages/chat_page.dart';
-import 'package:vmg/pages/user_notice.dart';
+import 'package:get/get.dart';
+import 'package:vmg/chat/chat_home.dart';
+import 'package:vmg/controllers/auth_controller.dart';
+import 'package:vmg/pages/Admin_notice.dart';
+import 'package:vmg/pages/home_page.dart';
+import 'package:vmg/pages/maintenance.dart';
+import 'package:vmg/utils/drawer.dart';
 import 'package:vmg/utils/routes.dart';
-
-import '../chat/chat_home.dart';
-import '../utils/drawer.dart';
-import 'Admin_notice.dart';
-import 'maintenance.dart';
 
 class AdminHome extends StatefulWidget {
   final String username;
   final String uid;
   final int initialSelectedScreen;
 
-  AdminHome({
+  const AdminHome({
     required this.username,
     required this.uid,
     required this.initialSelectedScreen,
@@ -33,19 +30,14 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
-  int flatNumber = 0;
-  double predefinedAmount = 100.0; // Replace with your predefined amount
+  final AuthController authController = Get.find();
   Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
-  int maintenance = 0;
-  String name = '';
-  String isAdmin = '';
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initialSelectedScreen;
-    fetchUserData();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -73,30 +65,6 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
-  Future<void> fetchUserData() async {
-    try {
-      final userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .get();
-
-      if (userSnapshot.exists) {
-        final userData = userSnapshot.data() as Map<String, dynamic>;
-        setState(() {
-          flatNumber = userData['flat'] ?? 0;
-          maintenance = userData['maintenance'] ?? 0;
-          name = userData['name'] ?? '';
-          isAdmin = userData['role'] ?? '';
-        });
-        print('User data exists: $userData');
-      } else {
-        print("No such user");
-      }
-    } catch (e) {
-      print('Error fetching user data: $e');
-    }
-  }
-
   @override
   void dispose() {
     _razorpay.clear();
@@ -112,17 +80,10 @@ class _AdminHomeState extends State<AdminHome> {
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
       return SafeArea(
-        child: MaintenanceScreen(
-          maintenance: maintenance,
-          predefinedAmount: predefinedAmount,
-          razorpay: _razorpay,
-          flatNumber: flatNumber,
-          name: name,
-          isAdmin: 'admin',
-        ),
+        child: MaintenanceScreen(),
       );
     } else if (index == 1) {
-      return SafeArea(child: NoticeBoardScreen());
+      return const SafeArea(child: NoticeBoardScreen());
     } else if (index == 2) {
       return SafeArea(
         child: ChatHome(uid: widget.uid),
@@ -144,9 +105,9 @@ class _AdminHomeState extends State<AdminHome> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            color: Color(0xff4B5350),
+            color: const Color(0xff4B5350),
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
+              await authController.signOut();
               Navigator.pushReplacementNamed(context, MyRoutes.loginRoute);
             },
           ),
@@ -159,7 +120,7 @@ class _AdminHomeState extends State<AdminHome> {
             child: Text(
               "Admin",
               style: GoogleFonts.poppins(
-                  color: Color(0xff4B5350),
+                  color: const Color(0xff4B5350),
                   fontWeight: FontWeight.w500,
                   shadows: [
                     const Shadow(
@@ -184,7 +145,7 @@ class _AdminHomeState extends State<AdminHome> {
           activeColor: Colors.white,
           tabBackgroundColor: Colors.grey.shade800,
           gap: 8,
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           tabs: const [
             GButton(
               icon: CupertinoIcons.home,
@@ -209,12 +170,13 @@ class _AdminHomeState extends State<AdminHome> {
         ),
       ),
       drawer: MyDrawer(
+        // MyDrawer code here...
         initialSelectedScreen: _selectedIndex,
-        username: widget.username,
-        predefinedAmount: predefinedAmount,
-        razorpay: _razorpay,
-        flatNumber: flatNumber,
+        flatNumber: authController.flatNumber.value,
+        predefinedAmount: authController.predefinedAmount.value,
+        razorpay: authController.razorpay,
         uid: widget.uid,
+        username: widget.username,
       ),
     );
   }
@@ -228,7 +190,7 @@ class NoticeBoardScreen extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           GlowingOverscrollIndicator(
@@ -241,7 +203,7 @@ class NoticeBoardScreen extends StatelessWidget {
                   'Notice Board',
                   style: GoogleFonts.poppins(
                     fontSize: 24,
-                    color: Color(0xff4B5350),
+                    color: const Color(0xff4B5350),
                     fontWeight: FontWeight.w400,
                     shadows: [
                       const Shadow(
@@ -252,7 +214,7 @@ class NoticeBoardScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
                 Icon(
@@ -265,7 +227,7 @@ class NoticeBoardScreen extends StatelessWidget {
           Expanded(
             child: Container(
               child:
-                  AdminNoticeBoard(), // Replace with your notice board widget.
+                  const AdminNoticeBoard(), // Replace with your notice board widget.
             ),
           ),
         ],
@@ -277,14 +239,14 @@ class NoticeBoardScreen extends StatelessWidget {
 class ProfileScreen extends StatelessWidget {
   final String username;
 
-  ProfileScreen({required this.username});
+  const ProfileScreen({super.key, required this.username});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
         'Profile Screen\nUsername: $username',
-        style: TextStyle(fontSize: 24),
+        style: const TextStyle(fontSize: 24),
       ),
     );
   }

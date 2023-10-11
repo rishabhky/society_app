@@ -9,7 +9,7 @@ class MyButton extends StatefulWidget {
   final String isAdmin;
   final String documentId;
 
-  MyButton({
+  const MyButton({
     Key? key,
     required this.iconPath,
     required this.buttonText,
@@ -93,9 +93,9 @@ class _MyButtonState extends State<MyButton> {
                   ),
                   TextField(
                       controller: _nameController,
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                       decoration: InputDecoration(
-                        icon: Icon(
+                        icon: const Icon(
                           CupertinoIcons.person,
                           color: Colors.grey,
                         ),
@@ -106,11 +106,11 @@ class _MyButtonState extends State<MyButton> {
                             fontWeight: FontWeight.w600),
                       )),
                   TextField(
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                       keyboardType: TextInputType.phone,
                       controller: _phoneController,
                       decoration: InputDecoration(
-                        icon: Icon(
+                        icon: const Icon(
                           CupertinoIcons.phone,
                           color: Colors.grey,
                         ),
@@ -120,7 +120,7 @@ class _MyButtonState extends State<MyButton> {
                             fontSize: 18,
                             fontWeight: FontWeight.w600),
                       )),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -157,7 +157,7 @@ class _MyButtonState extends State<MyButton> {
                               }
                             }
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             CupertinoIcons.checkmark_alt,
                             size: 30,
                           ),
@@ -175,7 +175,7 @@ class _MyButtonState extends State<MyButton> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             CupertinoIcons.xmark,
                             size: 30,
                           ),
@@ -249,6 +249,17 @@ class _MyButtonState extends State<MyButton> {
           width: 80,
           height: 80,
           padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey.shade500,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade400,
+                blurRadius: 40,
+                spreadRadius: 10,
+              )
+            ],
+          ),
           child: IconButton(
             onPressed: () {
               if (widget.isAdmin == 'admin') {
@@ -264,19 +275,8 @@ class _MyButtonState extends State<MyButton> {
             },
             icon: Image.asset(widget.iconPath),
           ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.grey.shade500,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade400,
-                blurRadius: 40,
-                spreadRadius: 10,
-              )
-            ],
-          ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Text(

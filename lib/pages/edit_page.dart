@@ -180,7 +180,7 @@ class _EditScreenState extends State<EditScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(16, 40, 16, 0),
+        padding: const EdgeInsets.fromLTRB(16, 40, 16, 0),
         child: Column(
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -243,7 +243,7 @@ class _EditScreenState extends State<EditScreen> {
                         );
                       }
                     },
-                    child: Text('View PDF'),
+                    child: const Text('View PDF'),
                   ),
                 // if (hasPdf == false)
                 //   ElevatedButton(
@@ -257,7 +257,7 @@ class _EditScreenState extends State<EditScreen> {
       ),
       floatingActionButton: SpeedDial(
           elevation: 10,
-          backgroundColor: Color(0xFF1f1d20),
+          backgroundColor: const Color(0xFF1f1d20),
           icon: Icons.auto_awesome_mosaic,
           isOpenOnStart: false,
           overlayColor: Colors.black,
@@ -269,8 +269,8 @@ class _EditScreenState extends State<EditScreen> {
                   color: Colors.grey,
                 ),
                 label: "Save",
-                labelBackgroundColor: Color(0xFF1f1d20),
-                labelStyle: TextStyle(color: Colors.grey),
+                labelBackgroundColor: const Color(0xFF1f1d20),
+                labelStyle: const TextStyle(color: Colors.grey),
                 onTap: () {
                   updateNotice();
                 }),
@@ -281,8 +281,8 @@ class _EditScreenState extends State<EditScreen> {
                   color: Colors.grey,
                 ),
                 label: "Delete",
-                labelBackgroundColor: Color(0xFF1f1d20),
-                labelStyle: TextStyle(color: Colors.grey),
+                labelBackgroundColor: const Color(0xFF1f1d20),
+                labelStyle: const TextStyle(color: Colors.grey),
                 onTap: () {
                   FirebaseFirestore.instance
                       .collection('notices')
@@ -298,8 +298,8 @@ class _EditScreenState extends State<EditScreen> {
                   color: Colors.grey,
                 ),
                 label: "Add Pdf",
-                labelBackgroundColor: Color(0xFF1f1d20),
-                labelStyle: TextStyle(color: Colors.grey),
+                labelBackgroundColor: const Color(0xFF1f1d20),
+                labelStyle: const TextStyle(color: Colors.grey),
                 onTap: _uploadPDF,
                 //Navigator.of(context).pop();
               ),
@@ -310,8 +310,8 @@ class _EditScreenState extends State<EditScreen> {
                 color: Colors.grey,
               ),
               label: "Add",
-              labelBackgroundColor: Color(0xFF1f1d20),
-              labelStyle: TextStyle(color: Colors.grey),
+              labelBackgroundColor: const Color(0xFF1f1d20),
+              labelStyle: const TextStyle(color: Colors.grey),
               onTap: () {
                 _addNoticeToFirestore(
                   titleController.text,
@@ -328,8 +328,8 @@ class _EditScreenState extends State<EditScreen> {
                 color: Colors.grey,
               ),
               label: "Display On Home",
-              labelBackgroundColor: Color(0xFF1f1d20),
-              labelStyle: TextStyle(color: Colors.grey),
+              labelBackgroundColor: const Color(0xFF1f1d20),
+              labelStyle: const TextStyle(color: Colors.grey),
               onTap: () => addDocumentToCollection(
                   titleController.text, noticeController.text),
             )

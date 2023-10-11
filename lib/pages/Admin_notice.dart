@@ -1,15 +1,12 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vmg/pages/edit_page.dart';
 import 'package:vmg/utils/colors.dart';
-import 'package:vmg/utils/routes.dart';
 
 class AdminNoticeBoard extends StatefulWidget {
   const AdminNoticeBoard({Key? key}) : super(key: key);
@@ -111,16 +108,16 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfffffff),
+      backgroundColor: const Color(0x0fffffff),
       body: Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: noticesStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
 
                 if (snapshot.hasError) {
@@ -145,7 +142,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        margin: EdgeInsets.all(7),
+                        margin: const EdgeInsets.all(7),
                         elevation: 5,
                         surfaceTintColor: Colors.white,
                         shadowColor: Colors.white,
@@ -160,7 +157,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                               ),
                             );
                           },
-                          contentPadding: EdgeInsets.all(10),
+                          contentPadding: const EdgeInsets.all(10),
                           // leading: IconButton(
                           //   icon: Icon(
                           //     Icons.picture_as_pdf,
@@ -186,7 +183,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 5,
                               ),
                               Text(
@@ -224,7 +221,7 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
                                             }
                                           },
                                         )
-                                      : SizedBox(
+                                      : const SizedBox(
                                           width: 0,
                                         ),
                                   IconButton(
@@ -270,12 +267,12 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFF1F1D20),
+        backgroundColor: const Color(0xFF1F1D20),
         onPressed: () async {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => EditScreen(documentId: ''),
+              builder: (BuildContext context) => const EditScreen(documentId: ''),
             ),
           );
           if (result == true) {

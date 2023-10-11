@@ -1,36 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:vmg/controllers/auth_controller.dart'; // Import your AuthController
+import 'package:vmg/pages/home_page.dart';
 import 'package:vmg/utils/mybutton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import '../utils/routes.dart';
-import 'admin_home.dart';
-import 'home_page.dart';
 
 class MaintenanceScreen extends StatefulWidget {
-  final int maintenance; // Correct the typo here
-  final double predefinedAmount;
-  final Razorpay razorpay;
-  final int flatNumber;
-  final String name;
-  final String isAdmin;
-
-  MaintenanceScreen(
-      {required this.maintenance,
-      required this.predefinedAmount,
-      required this.razorpay,
-      required this.flatNumber,
-      required this.name,
-      required this.isAdmin});
+  const MaintenanceScreen({Key? key}) : super(key: key);
 
   @override
   State<MaintenanceScreen> createState() => _MaintenanceScreenState();
 }
 
 class _MaintenanceScreenState extends State<MaintenanceScreen> {
+  final AuthController authController = Get.find(); // Add this line
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   String noticeTitle = "";
   String noticeContent = "";
@@ -77,21 +62,23 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
-                      " Hello ${widget.name}\n Flat No: ${widget.flatNumber}",
-                      style: GoogleFonts.poppins(
-                        color: Colors.grey.shade900,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                    Obx(
+                      () => Text(
+                        " Hello ${authController.name.value}\n Flat No: ${authController.flatNumber.value}",
+                        style: GoogleFonts.poppins(
+                          color: Colors.grey.shade900,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                    Icon(
+                    const Icon(
                       FontAwesomeIcons.houseChimneyCrack,
                       size: 100,
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Row(
@@ -100,38 +87,39 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     MyButton(
                         iconPath: "assets/images/electrician.png",
                         buttonText: "Electrician",
-                        isAdmin: widget.isAdmin,
+                        isAdmin: authController.isAdmin.value,
                         documentId: 'electrician'),
                     MyButton(
                         iconPath: "assets/images/plumber.png",
                         buttonText: "Plumber",
-                        isAdmin: widget.isAdmin,
+                        isAdmin: authController.isAdmin.value,
                         documentId: 'plumber'),
                     MyButton(
                         iconPath: "assets/images/security.png",
                         buttonText: "Security",
-                        isAdmin: widget.isAdmin,
+                        isAdmin: authController.isAdmin.value,
                         documentId: 'security'),
                     MyButton(
                         iconPath: "assets/images/man.png",
                         buttonText: "Caretaker",
-                        isAdmin: widget.isAdmin,
+                        isAdmin: authController.isAdmin.value,
                         documentId: 'caretaker'),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Container(
                   width: double.maxFinite,
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: Color(0xFF1F1D20).withOpacity(0.3), width: 2),
+                        color: const Color(0xFF1F1D20).withOpacity(0.3),
+                        width: 2),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Color(0xFF1F1D20).withOpacity(0.3),
+                      color: const Color(0xFF1F1D20).withOpacity(0.3),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
@@ -146,12 +134,12 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Container(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             width: double.maxFinite,
                             decoration: BoxDecoration(
-                              color: Color(0xFF1f1d20).withOpacity(0.9),
+                              color: const Color(0xFF1f1d20).withOpacity(0.9),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Column(
@@ -170,7 +158,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "₹ ${widget.maintenance}",
+                                      "₹ ${authController.maintenance.value}",
                                       style: GoogleFonts.poppins(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
@@ -187,12 +175,14 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) =>
-                                              PaymentDialog(widget.razorpay,
-                                                  widget.predefinedAmount),
+                                              PaymentDialog(
+                                                  authController.razorpay,
+                                                  authController
+                                                      .predefinedAmount.value),
                                         );
                                       },
                                       icon: const Icon(Icons.payment),
-                                      label: Text(
+                                      label: const Text(
                                         "Pay",
                                         style: TextStyle(
                                             color: Colors.black,
@@ -210,7 +200,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
@@ -221,10 +211,10 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Color(0xFF1f1d20).withOpacity(0.9),
+                      color: const Color(0xFF1f1d20).withOpacity(0.9),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       children: [
                         Text(

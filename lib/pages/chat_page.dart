@@ -10,8 +10,8 @@ class ChatPage extends StatefulWidget {
   final String? receiverEmail;
   final String? receiverName;
 
-  ChatPage(
-      {required this.senderId,
+  const ChatPage(
+      {super.key, required this.senderId,
       required this.receiverId,
       required this.receiverEmail,
       required this.receiverName});
@@ -30,9 +30,9 @@ class _ChatPageState extends State<ChatPage> {
     if (widget.senderId == null || widget.receiverId == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Chat Page - Error'),
+          title: const Text('Chat Page - Error'),
         ),
-        body: Center(
+        body: const Center(
           child: Text(
               'An error occurred. Missing sender or receiver information.'),
         ),
@@ -42,10 +42,10 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white60),
+        iconTheme: const IconThemeData(color: Colors.white60),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('${widget.receiverName ?? "Unknown User"}',
+        title: Text(widget.receiverName ?? "Unknown User",
             style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -65,7 +65,7 @@ class _ChatPageState extends State<ChatPage> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   if (snapshot.hasError) {
@@ -74,7 +74,7 @@ class _ChatPageState extends State<ChatPage> {
                   }
 
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Center(child: Text('No messages.'));
+                    return const Center(child: Text('No messages.'));
                   }
 
                   final messages = snapshot.data!.docs;
@@ -103,7 +103,7 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Flexible(
                               child: Container(
-                                padding: EdgeInsets.all(
+                                padding: const EdgeInsets.all(
                                     10.0), // Adjust padding as needed
                                 decoration: BoxDecoration(
                                   color: backgroundColor,
@@ -142,7 +142,7 @@ class _ChatPageState extends State<ChatPage> {
                               borderRadius: BorderRadius.circular(10)),
                           filled: true,
                           fillColor: Colors.grey.shade800,
-                          contentPadding: EdgeInsets.all(16),
+                          contentPadding: const EdgeInsets.all(16),
                           hintText: 'Type your message...',
                           hintStyle:
                               GoogleFonts.poppins(color: Colors.grey.shade700)),
@@ -152,7 +152,7 @@ class _ChatPageState extends State<ChatPage> {
                     icon: Icon(
                       CupertinoIcons.arrow_right,
                       size: 30,
-                      shadows: [Shadow(color: Colors.white54, blurRadius: 5)],
+                      shadows: const [Shadow(color: Colors.white54, blurRadius: 5)],
                       color: Colors.grey.shade600,
                     ),
                     onPressed: () {

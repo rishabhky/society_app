@@ -8,7 +8,7 @@ import 'package:vmg/pages/chat_page.dart';
 class ChatHome extends StatefulWidget {
   final String uid;
 
-  ChatHome({required this.uid});
+  const ChatHome({super.key, required this.uid});
 
   @override
   _ChatHomeState createState() => _ChatHomeState();
@@ -21,17 +21,18 @@ class _ChatHomeState extends State<ChatHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('users').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Text('No users available.');
+            return const Text('No users available.');
           }
 
           final users = snapshot.data!.docs;
@@ -49,7 +50,7 @@ class _ChatHomeState extends State<ChatHome> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.grey,
                           blurRadius: 10,
@@ -72,7 +73,8 @@ class _ChatHomeState extends State<ChatHome> {
                           ),
                         ),
                       ),
-                      trailing: Icon(CupertinoIcons.person_fill, size: 30),
+                      trailing:
+                          const Icon(CupertinoIcons.person_fill, size: 30),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -93,7 +95,7 @@ class _ChatHomeState extends State<ChatHome> {
                 );
               } else {
                 // Handle the case where userEmail is null or the same as the logged-in user.
-                return SizedBox
+                return const SizedBox
                     .shrink(); // This will create an empty ListTile for these cases.
               }
             },
