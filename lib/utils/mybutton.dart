@@ -219,19 +219,43 @@ class _MyButtonState extends State<MyButton> {
                       fontWeight: FontWeight.bold,
                       fontSize: 25),
                 ),
-                Text(
-                  "Name: $name",
-                  style: GoogleFonts.poppins(
-                      color: Colors.grey,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600),
+                SizedBox(
+                  height: 10,
                 ),
-                Text(
-                  "Phone: $phone",
-                  style: GoogleFonts.poppins(
-                      color: Colors.grey,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600),
+                Row(
+                  children: [
+                    Icon(CupertinoIcons.person_fill,
+                        color: Colors.blue.shade500),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Name: $name",
+                      style: GoogleFonts.poppins(
+                          color: Colors.grey,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Icon(CupertinoIcons.phone_fill,
+                        color: Colors.green.shade500),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Phone: $phone",
+                      style: GoogleFonts.poppins(
+                          color: Colors.grey,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ),
               ],
             ),

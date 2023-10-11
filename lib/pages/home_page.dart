@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -194,6 +196,7 @@ class _HomePageState extends State<HomePage> {
 class PaymentDialog extends StatelessWidget {
   final Razorpay _razorpay;
   final double predefinedAmount;
+  final AuthController authController = Get.find();
 
   PaymentDialog(this._razorpay, this.predefinedAmount, {super.key});
 
@@ -201,41 +204,107 @@ class PaymentDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        'Maintenance Payment',
-        style: GoogleFonts.poppins(
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
+    return BackdropFilter(
+      filter:
+          ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.overlay),
+      child: AlertDialog(
+        contentPadding: EdgeInsets.all(10),
+        backgroundColor: Colors.grey.shade900.withOpacity(0.98),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-              'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(labelText: 'Payment Amount'),
+        title: Text(
+          'Maintenance Payment',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.poppins(
+            fontSize: 25,
+            color: Colors.white70,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text.rich(
+              TextSpan(children: <InlineSpan>[
+                TextSpan(
+                  text: 'Maintenance Due : ',
+                  style: GoogleFonts.poppins(
+                      color: Colors.white60,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17),
+                ),
+                TextSpan(
+                  text: ' \u{20B9} ${authController.maintenance.value}',
+                  style: GoogleFonts.poppins(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17),
+                )
+              ]),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _amountController,
+              style: GoogleFonts.poppins(color: Colors.white60, fontSize: 16),
+              cursorColor: Colors.white60,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Payment Amount',
+                labelStyle:
+                    GoogleFonts.poppins(color: Colors.white38, fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.red.shade400.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.poppins(
+                            color: Colors.white70, fontWeight: FontWeight.w800),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green.shade400.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextButton(
+                      onPressed: () {
+                        _startPayment(context);
+                      },
+                      child: Text(
+                        'Pay',
+                        style: GoogleFonts.poppins(
+                            color: Colors.white70, fontWeight: FontWeight.w800),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              )
+            ],
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () {
-            _startPayment(context);
-          },
-          child: const Text('Pay'),
-        ),
-      ],
     );
   }
 

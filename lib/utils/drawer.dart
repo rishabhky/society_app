@@ -96,7 +96,7 @@ class _MyDrawerState extends State<MyDrawer> {
           customListItem(
             leading: CupertinoIcons.chat_bubble_2,
             title: "Chat",
-            currentIndex: 1,
+            currentIndex: 2,
             onTap: () {
               Navigator.push(
                 context,
@@ -112,7 +112,7 @@ class _MyDrawerState extends State<MyDrawer> {
           customListItem(
             leading: CupertinoIcons.person,
             title: "Profile",
-            currentIndex: 2,
+            currentIndex: 3,
             onTap: () {
               Navigator.push(
                 context,
@@ -120,7 +120,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   builder: (context) => AdminHome(
                       username: widget.username,
                       uid: widget.uid,
-                      initialSelectedScreen: 2), // Updated index to 0
+                      initialSelectedScreen: 3), // Updated index to 0
                 ),
               );
             },
