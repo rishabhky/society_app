@@ -10,6 +10,7 @@ import 'package:vmg/controllers/auth_controller.dart';
 import 'package:vmg/pages/Admin_notice.dart';
 import 'package:vmg/pages/home_page.dart';
 import 'package:vmg/pages/maintenance.dart';
+import 'package:vmg/pages/profile.dart';
 import 'package:vmg/utils/drawer.dart';
 import 'package:vmg/utils/routes.dart';
 
@@ -31,7 +32,7 @@ class AdminHome extends StatefulWidget {
 
 class _AdminHomeState extends State<AdminHome> {
   final AuthController authController = Get.find();
-  Razorpay _razorpay = Razorpay();
+  //Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
 
   @override
@@ -39,10 +40,13 @@ class _AdminHomeState extends State<AdminHome> {
     super.initState();
     _selectedIndex = widget.initialSelectedScreen;
     authController.fetchUserData();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    authController.razorpay = Razorpay();
+    authController.razorpay
+        .on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    authController.razorpay
+        .on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    authController.razorpay
+        .on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
@@ -68,7 +72,7 @@ class _AdminHomeState extends State<AdminHome> {
 
   @override
   void dispose() {
-    _razorpay.clear();
+    authController.razorpay.clear();
     super.dispose();
   }
 
@@ -90,7 +94,7 @@ class _AdminHomeState extends State<AdminHome> {
         child: ChatHome(uid: widget.uid),
       );
     } else if (index == 3) {
-      return SafeArea(child: ProfileScreen(username: widget.username));
+      return SafeArea(child: ProfileScreen());
     } else {
       return Container();
     }
@@ -232,22 +236,6 @@ class NoticeBoardScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  final String username;
-
-  const ProfileScreen({super.key, required this.username});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Profile Screen\nUsername: $username',
-        style: const TextStyle(fontSize: 24),
       ),
     );
   }

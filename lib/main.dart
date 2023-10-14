@@ -9,6 +9,7 @@ import 'package:vmg/pages/edit_page.dart';
 import 'package:vmg/pages/home_page.dart';
 import 'package:vmg/pages/login_page.dart';
 import 'package:vmg/pages/Admin_notice.dart';
+import 'package:vmg/pages/profile.dart';
 import 'package:vmg/utils/routes.dart';
 import 'firebase_options.dart';
 
@@ -66,6 +67,10 @@ void main() async {
       GetPage(
         name: MyRoutes.authRoute,
         page: () => const AuthPage(),
+      ),
+      GetPage(
+        name: MyRoutes.proPage,
+        page: () => const ProfileScreen(),
       ),
     ],
   ));

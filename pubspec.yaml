@@ -49,6 +49,8 @@ dependencies:
   pdf: ^3.10.4
   intl: ^0.18.1
   get: ^4.6.6
+  percent_indicator: ^4.2.3
+  widget_circular_animator: ^1.0.0
   
   
 

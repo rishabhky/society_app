@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vmg/pages/Admin_notice.dart';
+import 'package:vmg/pages/profile.dart';
 import 'package:vmg/pages/user_notice.dart';
 import 'package:vmg/utils/routes.dart';
 import '../chat/chat_home.dart';
@@ -35,7 +36,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AuthController authController = Get.find();
-  Razorpay _razorpay = Razorpay();
+  //Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
 
   @override
@@ -43,10 +44,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _selectedIndex = widget.initialSelectedScreen;
     authController.fetchUserData();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    authController.razorpay = Razorpay();
+    authController.razorpay
+        .on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    authController.razorpay
+        .on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    authController.razorpay
+        .on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
@@ -96,7 +100,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _razorpay.clear();
+    authController.razorpay.clear();
     super.dispose();
   }
 
@@ -116,8 +120,7 @@ class _HomePageState extends State<HomePage> {
     } else if (index == 2) {
       return SafeArea(child: ChatHome(uid: widget.uid));
     } else if (index == 3) {
-      return SafeArea(
-          child: ProfileScreen(username: authController.name.value));
+      return SafeArea(child: ProfileScreen());
     } else {
       return Container();
     }
@@ -183,11 +186,11 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: MyDrawer(
         initialSelectedScreen: _selectedIndex,
-        username: widget.username,
-        predefinedAmount: authController.predefinedAmount.value,
-        razorpay: _razorpay,
         flatNumber: authController.flatNumber.value,
+        predefinedAmount: authController.predefinedAmount.value,
+        razorpay: authController.razorpay,
         uid: widget.uid,
+        username: widget.username,
       ),
     );
   }
@@ -390,22 +393,6 @@ class NoticeBoardScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  final String username;
-
-  const ProfileScreen({super.key, required this.username});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Profile Screen\nUsername: $username',
-        style: const TextStyle(fontSize: 24),
       ),
     );
   }

@@ -13,6 +13,7 @@ class AuthController extends GetxController {
   RxString name = ''.obs;
   RxString userid = ''.obs;
   RxBool isInitialized = false.obs;
+  RxBool PaymentDone = false.obs;
   RxString isAdmin = ''.obs;
 
   @override
@@ -39,6 +40,7 @@ class AuthController extends GetxController {
     name.value = '';
     isAdmin.value = 'user';
     userid.value = '';
+    PaymentDone.value = false;
   }
 
   Future<void> initializeFirebase() async {
