@@ -46,6 +46,7 @@ class _ChatHomeState extends State<ChatHome> {
               final userId = users[index].id;
               final userEmail = userData['username'] as String?;
               final userName = userData['name'] as String;
+              final flat = userData['flat'];
 
               // Exclude the currently logged-in user.
               if (userId != authController.userid.value.trim() &&
@@ -69,7 +70,7 @@ class _ChatHomeState extends State<ChatHome> {
                       title: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Text(
-                          userName,
+                          "${userName}  -  ${flat}",
                           style: GoogleFonts.poppins(
                             fontSize: 22,
                             fontWeight: FontWeight.w500,

@@ -51,6 +51,8 @@ dependencies:
   get: ^4.6.6
   percent_indicator: ^4.2.3
   widget_circular_animator: ^1.0.0
+  home_widget: ^0.3.0
+  font_awesome_flutter: ^10.6.0
   
   
 

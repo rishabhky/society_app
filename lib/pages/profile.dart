@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vmg/controllers/auth_controller.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:widget_circular_animator/widget_circular_animator.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -151,9 +152,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
             ],
           ),
-          SizedBox(height: 5),
+          //SizedBox(height: 5),
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(8.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.grey.shade400,
@@ -231,16 +232,110 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           authController.isAdmin == 'admin'
               ? Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
+                        padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                             color: Colors.grey.shade600,
                             borderRadius: BorderRadius.circular(10)),
                         width: 180,
                         height: 150,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onLongPress: () {},
+                              child: Container(
+                                height: 40,
+                                width: double.maxFinite,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade400,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.umbrellaBeach,
+                                      size: 25,
+                                      color: Colors.black54,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      "Swimming Pool",
+                                      style: GoogleFonts.ubuntu(
+                                          fontSize: 15,
+                                          color: Colors.grey.shade800,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onLongPress: () {},
+                              child: Container(
+                                height: 40,
+                                width: double.maxFinite,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade400,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.electric_meter_sharp,
+                                      size: 25,
+                                      color: Colors.black54,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      "Generator",
+                                      style: GoogleFonts.ubuntu(
+                                          fontSize: 15,
+                                          color: Colors.grey.shade800,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onLongPress: () {},
+                              child: Container(
+                                height: 40,
+                                width: double.maxFinite,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade400,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.water_damage_sharp,
+                                      size: 25,
+                                      color: Colors.black54,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      "Tank Cleaning",
+                                      style: GoogleFonts.ubuntu(
+                                          fontSize: 15,
+                                          color: Colors.grey.shade800,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -248,18 +343,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(10)),
                         width: 150,
                         height: 150,
+                        child: CircularPercentIndicator(
+                          radius: 60,
+                          lineWidth: 12,
+                          backgroundColor: Colors.white38,
+                          center: authController.PaymentDone == true.obs
+                              ? Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                  size: 40,
+                                )
+                              : Text(
+                                  "$daysLeft days",
+                                  style: GoogleFonts.ubuntu(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: daysLeft < 5
+                                        ? Colors.red.shade500
+                                        : Colors.grey.shade800,
+                                  ),
+                                ),
+                          progressColor: Colors.grey.shade800,
+                          percent: percent, // Assuming 30 days in a month
+                          circularStrokeCap: CircularStrokeCap.round,
+                        ),
                       )
                     ],
                   ),
                 )
               : Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Container(
                     decoration: BoxDecoration(color: Colors.grey.shade700),
                     height: 150,
                     width: double.maxFinite,
                   ),
-                )
+                ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: authController.isAdmin == 'admin'
+                  ? Container(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade600,
+                          borderRadius: BorderRadius.circular(10)),
+                    )
+                  : Container(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade600,
+                          borderRadius: BorderRadius.circular(10))),
+            ),
+          )
         ],
       ),
     );
