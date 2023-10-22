@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vmg/utils/routes.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -28,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
         );
         final username = _usernameController.text;
 
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 1));
 
         Navigator.pushReplacementNamed(
           context,
@@ -50,14 +52,14 @@ class _LoginPageState extends State<LoginPage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Authentication Error'),
+              title: const Text('Authentication Error'),
               content: Text(errorMessage),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -76,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       changeRegisterButton = true;
     });
     await Future.delayed(
-        Duration(seconds: 1)); // Delay the navigation animation
+        const Duration(seconds: 1)); // Delay the navigation animation
     Navigator.pushNamed(context, MyRoutes.regRoute);
     setState(() {
       changeRegisterButton = false;
@@ -172,23 +174,10 @@ class _LoginPageState extends State<LoginPage> {
                         InkWell(
                           onTap: () => signIn(),
                           child: AnimatedContainer(
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             width: changeLoginButton ? 50 : 100,
                             height: 40,
                             alignment: Alignment.center,
-                            child: changeLoginButton
-                                ? Icon(
-                                    Icons.done,
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    "Login",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
                             decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(
@@ -196,19 +185,32 @@ class _LoginPageState extends State<LoginPage> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                   blurRadius: 4,
                                 ),
                               ],
                             ),
+                            child: changeLoginButton
+                                ? const Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  )
+                                : const Text(
+                                    "Login",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
                           ),
                         ),
 
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         // Divider Line and "or" Text
-                        Row(
+                        const Row(
                           children: [
                             Expanded(
                               child: Divider(
@@ -218,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                                  EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 "or",
                                 style: TextStyle(
@@ -242,23 +244,10 @@ class _LoginPageState extends State<LoginPage> {
                         InkWell(
                           onTap: () => moveToRegister(),
                           child: AnimatedContainer(
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             width: changeRegisterButton ? 50 : 100,
                             height: 40,
                             alignment: Alignment.center,
-                            child: changeRegisterButton
-                                ? Icon(
-                                    Icons.done,
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    "Admin",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
                             decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(
@@ -266,11 +255,24 @@ class _LoginPageState extends State<LoginPage> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                   blurRadius: 4,
                                 ),
                               ],
                             ),
+                            child: changeRegisterButton
+                                ? const Icon(
+                                    Icons.done,
+                                    color: Colors.white,
+                                  )
+                                : const Text(
+                                    "Admin",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
                           ),
                         )
                       ],

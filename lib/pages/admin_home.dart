@@ -1,48 +1,52 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:vmg/pages/user_notice.dart';
+import 'package:get/get.dart';
+import 'package:vmg/chat/chat_home.dart';
+import 'package:vmg/controllers/auth_controller.dart';
+import 'package:vmg/pages/Admin_notice.dart';
+import 'package:vmg/pages/home_page.dart';
+import 'package:vmg/pages/maintenance.dart';
+import 'package:vmg/pages/profile.dart';
+import 'package:vmg/utils/drawer.dart';
 import 'package:vmg/utils/routes.dart';
-
-import 'Admin_notice.dart';
 
 class AdminHome extends StatefulWidget {
   final String username;
   final String uid;
   final int initialSelectedScreen;
 
-  AdminHome(
-      {required this.username,
-      required this.uid,
-      required this.initialSelectedScreen,
-      Key? key})
-      : super(key: key);
+  const AdminHome({
+    required this.username,
+    required this.uid,
+    required this.initialSelectedScreen,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<AdminHome> createState() => _AdminHomeState();
 }
 
 class _AdminHomeState extends State<AdminHome> {
-  String isAdmin = "";
-  int flatNumber = 0;
-  double predefinedAmount = 100.0; // Replace with your predefined amount
-  Razorpay _razorpay = Razorpay();
+  final AuthController authController = Get.find();
+  //Razorpay _razorpay = Razorpay();
   int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initialSelectedScreen;
-    fetchUserData();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    authController.fetchUserData();
+    authController.razorpay = Razorpay();
+    authController.razorpay
+        .on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    authController.razorpay
+        .on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    authController.razorpay
+        .on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
@@ -66,31 +70,9 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
-  Future<void> fetchUserData() async {
-    try {
-      final userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .get();
-
-      if (userSnapshot.exists) {
-        final userData = userSnapshot.data() as Map<String, dynamic>;
-        setState(() {
-          flatNumber = userData['flat'] ?? 0;
-          isAdmin = userData['role'] ?? '';
-        });
-        print('User data exists: $userData');
-      } else {
-        print("No such user");
-      }
-    } catch (e) {
-      print('Error fetching user data: $e');
-    }
-  }
-
   @override
   void dispose() {
-    _razorpay.clear();
+    authController.razorpay.clear();
     super.dispose();
   }
 
@@ -102,18 +84,17 @@ class _AdminHomeState extends State<AdminHome> {
 
   Widget _getSelectedScreen(int index) {
     if (index == 0) {
-      return SafeArea(child: NoticeBoardScreen(isAdmin: true));
-    } else if (index == 1) {
       return SafeArea(
-        child: MaintenanceScreen(
-          username: widget.username,
-          predefinedAmount: predefinedAmount,
-          razorpay: _razorpay,
-          flatNumber: flatNumber,
-        ),
+        child: MaintenanceScreen(),
       );
+    } else if (index == 1) {
+      return const SafeArea(child: NoticeBoardScreen());
     } else if (index == 2) {
-      return SafeArea(child: ProfileScreen(username: widget.username));
+      return SafeArea(
+        child: ChatHome(uid: widget.uid),
+      );
+    } else if (index == 3) {
+      return SafeArea(child: ProfileScreen());
     } else {
       return Container();
     }
@@ -122,21 +103,21 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0C0D0D),
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Color(0xff4B5350)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.login),
-            color: Colors.white,
+            icon: const Icon(Icons.logout),
+            color: const Color(0xff4B5350),
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
+              await authController.signOut();
               Navigator.pushReplacementNamed(context, MyRoutes.loginRoute);
             },
           ),
         ],
-        backgroundColor: Color(0xFF0C0D0D),
+        backgroundColor: Colors.grey[300],
         title: Center(
           child: GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
@@ -144,7 +125,7 @@ class _AdminHomeState extends State<AdminHome> {
             child: Text(
               "Admin",
               style: GoogleFonts.poppins(
-                  color: Colors.white,
+                  color: const Color(0xff4B5350),
                   fontWeight: FontWeight.w500,
                   shadows: [
                     const Shadow(
@@ -165,22 +146,27 @@ class _AdminHomeState extends State<AdminHome> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: GNav(
-          color: Colors.white60,
+          color: Colors.grey.shade800,
           activeColor: Colors.white,
-          tabBackgroundColor: Color(0xFF1F1D20),
+          tabBackgroundColor: Colors.grey.shade800,
           gap: 8,
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           tabs: const [
             GButton(
-              icon: CupertinoIcons.bell,
-              text: 'Notice',
-            ),
-            GButton(
               icon: CupertinoIcons.home,
-              text: 'Maintenance',
+              text: 'Home',
+              textColor: Color(0xffefedec),
             ),
             GButton(
-              icon: CupertinoIcons.person_2_fill,
+              icon: CupertinoIcons.bell,
+              text: 'Notices',
+            ),
+            GButton(
+              icon: CupertinoIcons.chat_bubble_2,
+              text: 'Chat',
+            ),
+            GButton(
+              icon: CupertinoIcons.person_2,
               text: 'Profile',
             )
           ],
@@ -189,405 +175,67 @@ class _AdminHomeState extends State<AdminHome> {
         ),
       ),
       drawer: MyDrawer(
+        // MyDrawer code here...
         initialSelectedScreen: _selectedIndex,
-        username: widget.username,
-        predefinedAmount: predefinedAmount,
-        razorpay: _razorpay,
-        flatNumber: flatNumber,
+        flatNumber: authController.flatNumber.value,
+        predefinedAmount: authController.predefinedAmount.value,
+        razorpay: authController.razorpay,
         uid: widget.uid,
-      ),
-    );
-  }
-}
-
-class MaintenanceScreen extends StatelessWidget {
-  final String username;
-  final double predefinedAmount;
-  final Razorpay razorpay;
-  final int flatNumber;
-
-  MaintenanceScreen({
-    required this.username,
-    required this.predefinedAmount,
-    required this.razorpay,
-    required this.flatNumber,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Welcome $username!",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Flat No: $flatNumber",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Notice ",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "Below are the maintenance details for your flat, the payment button opens a dialog box, enter the right amount and continue with RazorPay safe payment ...",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shadowColor: Colors.white,
-                  elevation: 8,
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        PaymentDialog(razorpay, predefinedAmount),
-                  );
-                },
-                icon: const Icon(Icons.payment),
-                label: Text(
-                  "Payment",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        ),
+        username: widget.username,
       ),
     );
   }
 }
 
 class NoticeBoardScreen extends StatelessWidget {
-  final bool isAdmin;
-
-  const NoticeBoardScreen({Key? key, required this.isAdmin}) : super(key: key);
+  const NoticeBoardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
             color: Colors.white,
-            child: Text(
-              'Notice Board',
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-                shadows: [
-                  const Shadow(
-                    offset: Offset(0, 2),
-                    blurRadius: 10,
-                    color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Notice Board',
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    color: const Color(0xff4B5350),
+                    fontWeight: FontWeight.w400,
+                    shadows: [
+                      const Shadow(
+                        offset: Offset(0, 2),
+                        blurRadius: 10,
+                        color: Colors.white,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  CupertinoIcons.doc_on_clipboard,
+                  color: Colors.grey.shade800,
+                )
+              ],
             ),
           ),
           Expanded(
             child: Container(
-              child: isAdmin
-                  ? AdminNoticeBoard()
-                  : UserNoticeBoard(
-                      notices: [],
-                    ),
+              child:
+                  const AdminNoticeBoard(), // Replace with your notice board widget.
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class PaymentDialog extends StatelessWidget {
-  final Razorpay _razorpay;
-  final double predefinedAmount;
-
-  PaymentDialog(this._razorpay, this.predefinedAmount);
-
-  final TextEditingController _amountController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        'Maintenance Payment',
-        style: GoogleFonts.poppins(
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-              'Maintenance Due this Month: \u{20B9}${predefinedAmount.toStringAsFixed(2)}'),
-          SizedBox(height: 10),
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'Payment Amount'),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () {
-            _startPayment(context);
-          },
-          child: Text('Pay'),
-        ),
-      ],
-    );
-  }
-
-  void _startPayment(BuildContext context) {
-    double paymentAmount = double.tryParse(_amountController.text) ?? 0.0;
-
-    if (paymentAmount <= 0) {
-      // Show an error message
-      Fluttertoast.showToast(
-        msg: "Invalid payment amount",
-        timeInSecForIosWeb: 4,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-      return;
-    }
-
-    // Configure payment options
-    var options = {
-      'key': 'rzp_test_ugZrbmLHkEGjBy',
-      'amount': (paymentAmount * 100).toInt(),
-      'name': 'V.M Grandeur',
-      'subscription_id': 'sub_MSOdGYZ9PmO29d',
-      'description': 'Payment for services',
-      'prefill': {'contact': '', 'email': ''},
-    };
-
-    _razorpay.open(options);
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  final String username;
-
-  ProfileScreen({required this.username});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Profile Screen\nUsername: $username',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class MyDrawer extends StatelessWidget {
-  final String username;
-  final int initialSelectedScreen; // Updated property
-  final double predefinedAmount;
-  final Razorpay razorpay;
-  final int flatNumber;
-  final String uid;
-
-  const MyDrawer({
-    required this.username,
-    required this.initialSelectedScreen,
-    required this.predefinedAmount,
-    required this.razorpay,
-    required this.flatNumber,
-    required this.uid,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: Colors.black.withOpacity(0.85),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage('assets/images/profile.png'),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Hello $username!",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          customListItem(
-            leading: CupertinoIcons.news,
-            title: "Notices",
-            currentIndex: 0,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 0), // Updated index to 0
-                ),
-              );
-            },
-          ),
-          customListItem(
-            leading: CupertinoIcons.money_dollar,
-            title: "Maintenance",
-            currentIndex: 1,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 1), // Updated index to 0
-                ),
-              );
-            },
-          ),
-          customListItem(
-            leading: CupertinoIcons.person,
-            title: "Profile",
-            currentIndex: 2,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminHome(
-                      username: username,
-                      uid: uid,
-                      initialSelectedScreen: 2), // Updated index to 0
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget customListItem({
-    required IconData leading,
-    required String title,
-    required int currentIndex,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-            topLeft: Radius.circular(30),
-            bottomLeft: Radius.circular(30),
-          ),
-          color: currentIndex == initialSelectedScreen
-              ? Color(0xFF1f1d20).withOpacity(0.85)
-              : Colors.transparent,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: ListTile(
-            leading: Icon(
-              leading,
-              color: Colors.white,
-            ),
-            title: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(
-                fontSize: 17,
-                color: currentIndex == initialSelectedScreen
-                    ? Colors.white
-                    : Colors.grey, // Set text color
-              ),
-            ),
-            onTap: onTap,
-          ),
-        ),
       ),
     );
   }
