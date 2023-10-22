@@ -11,6 +11,8 @@ class AuthController extends GetxController {
   Razorpay razorpay = Razorpay();
   RxInt flatNumber = 0.obs;
   RxString name = ''.obs;
+  RxString username = ''.obs;
+  RxString gender = ''.obs;
   RxString userid = ''.obs;
   RxBool isInitialized = false.obs;
   RxBool PaymentDone = false.obs;
@@ -38,8 +40,10 @@ class AuthController extends GetxController {
     predefinedAmount.value = 100.0;
     flatNumber.value = 0;
     name.value = '';
+    username.value = '';
     isAdmin.value = 'user';
     userid.value = '';
+    gender.value = '';
     PaymentDone.value = false;
   }
 
@@ -70,7 +74,9 @@ class AuthController extends GetxController {
               (userData['maintenance'] ?? 0.0).toDouble(); // Convert to double
           name.value = userData['name'] ?? '';
           userid.value = userData['uid'] ?? '';
+          username.value = userData['username'] ?? '';
           isAdmin.value = userData['role'] ?? '';
+          gender.value = userData['gender'] ?? '';
         }
       }
     } catch (e) {

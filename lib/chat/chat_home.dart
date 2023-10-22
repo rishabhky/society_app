@@ -70,7 +70,7 @@ class _ChatHomeState extends State<ChatHome> {
                       title: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Text(
-                          "${userName}  -  ${flat}",
+                          "${authController.gender == 'male' ? 'Mr.' : 'Mrs.'} ${userName}  -  ${flat}",
                           style: GoogleFonts.poppins(
                             fontSize: 22,
                             fontWeight: FontWeight.w500,

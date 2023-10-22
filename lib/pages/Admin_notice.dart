@@ -272,7 +272,8 @@ class _AdminNoticeBoardState extends State<AdminNoticeBoard> {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => const EditScreen(documentId: ''),
+              builder: (BuildContext context) =>
+                  const EditScreen(documentId: ''),
             ),
           );
           if (result == true) {

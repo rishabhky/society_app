@@ -89,7 +89,8 @@ class _ChatPageState extends State<ChatPage> {
                           messages[index].data() as Map<String, dynamic>;
                       final messageText = messageData['message'] as String;
                       final senderId = messageData['senderId'] as String;
-                      final isSender = senderId == authController.userid.value;
+                      final isSender =
+                          senderId == authController.username.value;
 
                       // Set background color and alignment based on sender
                       final backgroundColor =
