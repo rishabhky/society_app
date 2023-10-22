@@ -14,6 +14,8 @@ Maintenance Payment: Easily pay your society maintenance fees through the app, m
 
 Notice Board: Stay updated with important announcements, notices, and events posted by the society management.
 
+Chat with Neighbors: Connect with your neighbors through the app, fostering community interaction and making it easier to communicate and socialize with those around you.
+
 ## Upcoming Features
 I am actively working on adding more features to make this app even more useful for society residents. Some of the upcoming features include:
 
