@@ -43,19 +43,35 @@ dependencies:
   fluttertoast: ^8.2.2
   google_nav_bar: ^5.0.6
   flutter_speed_dial: ^7.0.0
+  firebase_storage: ^11.2.6
+  file_picker: ^5.5.0
+  easy_pdf_viewer: ^1.0.7
+  pdf: ^3.10.4
+  intl: ^0.18.1
+  get: ^4.6.6
+  percent_indicator: ^4.2.3
+  widget_circular_animator: ^1.0.0
+  home_widget: ^0.3.0
+  font_awesome_flutter: ^10.6.0
+  calendar_date_picker2: ^0.5.3
+  
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_launcher_icons: ^0.13.1
+  font_awesome_flutter: ^10.5.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "flutter_01.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -72,6 +88,11 @@ flutter:
     - assets/images/login.png
     - assets/images/profile.png
     - assets/images/admin.png
+    - assets/images/electrician.png
+    - assets/images/plumber.png
+    - assets/images/security.png
+    - assets/images/man.png
+    - assets/images/home.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

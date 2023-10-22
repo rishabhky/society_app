@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Your App Name</string>
+    <string name="days_left">Days Left:</string>
+    <!-- Add more string resources as needed -->
+</resources>
